@@ -6,67 +6,24 @@
 <title>History Quiz</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --border: #252836;
-    --accent: #6c63ff;
-    --green: #22c55e;
-    --red: #ef4444;
-    --yellow: #f59e0b;
-    --text: #e2e8f0;
-    --muted: #64748b;
+    --bg: #0f1117; --card: #1a1d27; --border: #252836;
+    --accent: #6c63ff; --green: #22c55e; --red: #ef4444;
+    --yellow: #f59e0b; --text: #e2e8f0; --muted: #64748b;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
   .screen { display: none; width: 100%; max-width: 700px; padding: 24px 16px; }
   .screen.active { display: block; }
 
-  /* ── HOME ── */
-  .home-title {
-    font-size: clamp(38px, 9vw, 68px);
-    font-weight: 800;
-    text-align: center;
-    line-height: 1.1;
-    margin-bottom: 10px;
-  }
-  .home-sub {
-    text-align: center;
-    color: var(--muted);
-    font-size: 16px;
-    margin-bottom: 40px;
-  }
-  .diff-label {
-    text-align: center;
-    font-size: 13px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 18px;
-  }
-  .diff-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  .diff-btn {
-    border: 2px solid;
-    background: transparent;
-    border-radius: 14px;
-    padding: 28px 16px;
-    cursor: pointer;
-    transition: background 0.18s, transform 0.15s;
-    text-align: center;
-    font-family: inherit;
-  }
+  /* HOME */
+  .home-topbar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+  .lang-btn { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 7px 16px; color: var(--text); font-family: inherit; font-size: 14px; cursor: pointer; transition: border-color 0.15s; }
+  .lang-btn:hover { border-color: var(--accent); }
+  .home-title { font-size: clamp(38px, 9vw, 68px); font-weight: 800; text-align: center; line-height: 1.1; margin-bottom: 10px; }
+  .home-sub { text-align: center; color: var(--muted); font-size: 16px; margin-bottom: 40px; }
+  .diff-label { text-align: center; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .diff-btn { border: 2px solid; background: transparent; border-radius: 14px; padding: 28px 16px; cursor: pointer; transition: background 0.18s, transform 0.15s; text-align: center; font-family: inherit; }
   .diff-btn:hover { transform: translateY(-4px); }
   .diff-btn .diff-icon { font-size: 36px; display: block; margin-bottom: 10px; }
   .diff-btn .diff-name { font-size: 18px; font-weight: 700; display: block; }
@@ -77,243 +34,124 @@
   .diff-btn.medium:hover { background: rgba(245,158,11,0.1); }
   .diff-btn.hard   { border-color: var(--red);    color: var(--red); }
   .diff-btn.hard:hover   { background: rgba(239,68,68,0.1); }
-  .hs-row {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
-  .hs-pill {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 16px;
-    font-size: 13px;
-    color: var(--muted);
-  }
+  .hs-row { display: flex; gap: 16px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+  .hs-pill { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; font-size: 13px; color: var(--muted); }
   .hs-pill span { color: var(--text); font-weight: 600; }
 
-  /* ── QUIZ ── */
-  .quiz-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-    gap: 10px;
-  }
+  /* LANG MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; max-width: 420px; width: 90%; }
+  .modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+  .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lang-opt { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 14px 16px; cursor: pointer; font-family: inherit; color: var(--text); font-size: 15px; display: flex; align-items: center; gap: 10px; transition: border-color 0.15s, background 0.15s; }
+  .lang-opt:hover { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+  .lang-opt.selected { border-color: var(--accent); background: rgba(108,99,255,0.15); }
+  .lang-flag { font-size: 22px; }
+  .modal-close { margin-top: 16px; width: 100%; background: var(--border); border: none; border-radius: 10px; padding: 11px; color: var(--text); font-family: inherit; font-size: 14px; cursor: pointer; }
+  .modal-close:hover { background: #333; }
+
+  /* QUIZ */
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
   .quiz-meta { display: flex; flex-direction: column; }
-  .diff-tag {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
+  .diff-tag { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
   .diff-tag.easy   { color: var(--green); }
   .diff-tag.medium { color: var(--yellow); }
   .diff-tag.hard   { color: var(--red); }
   .quiz-counter { font-size: 14px; color: var(--muted); }
-  .score-pill {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
+  .score-pill { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 600; white-space: nowrap; }
   .timer-wrap { flex-shrink: 0; }
   .timer-svg { display: block; }
   .timer-ring { transition: stroke-dashoffset 0.1s linear, stroke 0.3s; }
-  .timer-text {
-    font-size: 12px;
-    font-weight: 700;
-    fill: var(--text);
-    dominant-baseline: central;
-    text-anchor: middle;
-  }
-
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 4px;
-    transition: width 0.3s;
-  }
-
-  .question-card {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 18px;
-    padding: 32px 28px;
-    margin-bottom: 20px;
-    min-height: 130px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  .question-text {
-    font-size: clamp(16px, 3.5vw, 22px);
-    font-weight: 600;
-    line-height: 1.5;
-  }
-
-  .opts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .opt-btn {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 13px;
-    padding: 14px 18px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 14px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-align: left;
-    transition: border-color 0.15s, background 0.15s, transform 0.12s;
-  }
+  .timer-text { font-size: 12px; font-weight: 700; fill: var(--text); dominant-baseline: central; text-anchor: middle; }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; }
+  .question-card { background: var(--card); border: 2px solid var(--border); border-radius: 18px; padding: 32px 28px; margin-bottom: 20px; min-height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .question-text { font-size: clamp(16px, 3.5vw, 22px); font-weight: 600; line-height: 1.5; }
+  .opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opt-btn { background: var(--card); border: 2px solid var(--border); border-radius: 13px; padding: 14px 18px; cursor: pointer; font-family: inherit; font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 12px; text-align: left; transition: border-color 0.15s, background 0.15s, transform 0.12s; }
   .opt-btn:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
   .opt-btn:disabled { cursor: default; }
-  .opt-btn.correct  { border-color: var(--green); background: rgba(34,197,94,0.12); }
-  .opt-btn.wrong    { border-color: var(--red);   background: rgba(239,68,68,0.12); }
-  .opt-btn.dimmed   { opacity: 0.35; }
-  .letter-tag {
-    min-width: 28px; height: 28px;
-    background: var(--border);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 13px;
-    flex-shrink: 0;
-  }
+  .opt-btn.correct { border-color: var(--green); background: rgba(34,197,94,0.12); }
+  .opt-btn.wrong   { border-color: var(--red);   background: rgba(239,68,68,0.12); }
+  .opt-btn.dimmed  { opacity: 0.35; }
+  .letter-tag { min-width: 28px; height: 28px; background: var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
   .opt-btn.correct .letter-tag { background: var(--green); color: #000; }
   .opt-btn.wrong   .letter-tag { background: var(--red);   color: #fff; }
+  .float-pts { position: fixed; font-size: 22px; font-weight: 800; color: var(--yellow); pointer-events: none; animation: floatUp 0.85s ease-out forwards; z-index: 999; }
+  @keyframes floatUp { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-60px); } }
 
-  /* floating points */
-  .float-pts {
-    position: fixed;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--yellow);
-    pointer-events: none;
-    animation: floatUp 0.85s ease-out forwards;
-    z-index: 999;
-  }
-  @keyframes floatUp {
-    from { opacity: 1; transform: translateY(0); }
-    to   { opacity: 0; transform: translateY(-60px); }
-  }
-
-  /* ── RESULT ── */
-  .result-score {
-    text-align: center;
-    font-size: clamp(56px, 14vw, 96px);
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-  .result-grade {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 30px;
-  }
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    padding: 14px 10px;
-    text-align: center;
-  }
+  /* RESULT */
+  .result-score { text-align: center; font-size: clamp(56px,14vw,96px); font-weight: 800; margin-bottom: 4px; }
+  .result-grade { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 30px; }
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 14px 10px; text-align: center; }
   .stat-val { font-size: 22px; font-weight: 700; }
   .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
-  .result-btns {
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-  }
-  .btn-main {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 13px 28px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
+  .result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-main { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 13px 28px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
   .btn-main:hover { opacity: 0.82; }
-  .btn-ghost {
-    background: var(--card);
-    color: var(--text);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 13px 28px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
+  .btn-ghost { background: var(--card); color: var(--text); border: 2px solid var(--border); border-radius: 12px; padding: 13px 28px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
   .btn-ghost:hover { opacity: 0.82; }
 
   @media (max-width: 520px) {
     .opts-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
     .diff-grid { grid-template-columns: 1fr; }
+    .lang-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── HOME ── -->
-<div id="home" class="screen active">
-  <div class="home-title">📜 History Quiz</div>
-  <div class="home-sub">Test your knowledge of world history</div>
-  <div class="diff-label">Choose difficulty</div>
-  <div class="diff-grid">
-    <button class="diff-btn easy"   onclick="startGame('easy')">
-      <span class="diff-icon">🟢</span>
-      <span class="diff-name">Easy</span>
-      <span class="diff-desc">20s · Familiar events</span>
-    </button>
-    <button class="diff-btn medium" onclick="startGame('medium')">
-      <span class="diff-icon">🟡</span>
-      <span class="diff-name">Medium</span>
-      <span class="diff-desc">15s · Deeper knowledge</span>
-    </button>
-    <button class="diff-btn hard"   onclick="startGame('hard')">
-      <span class="diff-icon">🔴</span>
-      <span class="diff-name">Hard</span>
-      <span class="diff-desc">10s · Expert level</span>
-    </button>
-  </div>
-  <div class="hs-row">
-    <div class="hs-pill">🟢 Easy best: <span id="hs-easy">—</span></div>
-    <div class="hs-pill">🟡 Medium best: <span id="hs-medium">—</span></div>
-    <div class="hs-pill">🔴 Hard best: <span id="hs-hard">—</span></div>
+<!-- LANGUAGE MODAL -->
+<div id="lang-modal" class="modal-overlay" onclick="if(event.target===this)closeLangModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Choose Language</div>
+    <div class="lang-grid">
+      <button class="lang-opt" id="lo-en" onclick="setLang('en')"><span class="lang-flag">🇬🇧</span> English</button>
+      <button class="lang-opt" id="lo-ru" onclick="setLang('ru')"><span class="lang-flag">🇷🇺</span> Русский</button>
+      <button class="lang-opt" id="lo-fr" onclick="setLang('fr')"><span class="lang-flag">🇫🇷</span> Français</button>
+      <button class="lang-opt" id="lo-de" onclick="setLang('de')"><span class="lang-flag">🇩🇪</span> Deutsch</button>
+      <button class="lang-opt" id="lo-it" onclick="setLang('it')"><span class="lang-flag">🇮🇹</span> Italiano</button>
+    </div>
+    <button class="modal-close" onclick="closeLangModal()" id="modal-close-btn">Close</button>
   </div>
 </div>
 
-<!-- ── QUIZ ── -->
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-topbar">
+    <button class="lang-btn" id="lang-btn" onclick="openLangModal()">🌐 Language</button>
+  </div>
+  <div class="home-title" id="home-title">📜 History Quiz</div>
+  <div class="home-sub" id="home-sub">Test your knowledge of world history</div>
+  <div class="diff-label" id="diff-label">Choose difficulty</div>
+  <div class="diff-grid">
+    <button class="diff-btn easy" onclick="startGame('easy')">
+      <span class="diff-icon">🟢</span>
+      <span class="diff-name" id="easy-name">Easy</span>
+      <span class="diff-desc" id="easy-desc">20s · Familiar events</span>
+    </button>
+    <button class="diff-btn medium" onclick="startGame('medium')">
+      <span class="diff-icon">🟡</span>
+      <span class="diff-name" id="med-name">Medium</span>
+      <span class="diff-desc" id="med-desc">15s · Deeper knowledge</span>
+    </button>
+    <button class="diff-btn hard" onclick="startGame('hard')">
+      <span class="diff-icon">🔴</span>
+      <span class="diff-name" id="hard-name">Hard</span>
+      <span class="diff-desc" id="hard-desc">10s · Expert level</span>
+    </button>
+  </div>
+  <div class="hs-row">
+    <div class="hs-pill" id="hs-easy-pill">🟢 Easy best: <span id="hs-easy">—</span></div>
+    <div class="hs-pill" id="hs-med-pill">🟡 Medium best: <span id="hs-medium">—</span></div>
+    <div class="hs-pill" id="hs-hard-pill">🔴 Hard best: <span id="hs-hard">—</span></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
 <div id="quiz" class="screen">
   <div class="quiz-header">
     <div class="quiz-meta">
@@ -325,347 +163,538 @@
       <svg class="timer-svg" width="48" height="48" viewBox="0 0 48 48">
         <circle cx="24" cy="24" r="19" fill="none" stroke="#252836" stroke-width="4"/>
         <circle id="timer-ring" class="timer-ring" cx="24" cy="24" r="19"
-          fill="none" stroke="#22c55e" stroke-width="4"
-          stroke-linecap="round"
-          stroke-dasharray="119.38"
-          stroke-dashoffset="0"
-          transform="rotate(-90 24 24)"/>
+          fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"
+          stroke-dasharray="119.38" stroke-dashoffset="0" transform="rotate(-90 24 24)"/>
         <text id="timer-text" class="timer-text" x="24" y="24">20</text>
       </svg>
     </div>
   </div>
-
   <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-  <div class="question-card">
-    <div class="question-text" id="question-text">Loading…</div>
-  </div>
-
+  <div class="question-card"><div class="question-text" id="question-text">…</div></div>
   <div class="opts-grid" id="opts-grid"></div>
 </div>
 
-<!-- ── RESULT ── -->
+<!-- RESULT -->
 <div id="result" class="screen">
   <div class="result-score" id="result-score">0</div>
   <div class="result-grade" id="result-grade"></div>
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-val" id="stat-correct">0</div>
-      <div class="stat-lbl">Correct</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-speed">—</div>
-      <div class="stat-lbl">Avg speed</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-streak">0</div>
-      <div class="stat-lbl">Best streak</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-best">—</div>
-      <div class="stat-lbl">High score</div>
-    </div>
+    <div class="stat-card"><div class="stat-val" id="stat-correct">0</div><div class="stat-lbl" id="lbl-correct">Correct</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-speed">—</div><div class="stat-lbl" id="lbl-speed">Avg speed</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" id="lbl-streak">Best streak</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-best">—</div><div class="stat-lbl" id="lbl-best">High score</div></div>
   </div>
   <div class="result-btns">
-    <button class="btn-main" onclick="restart()">Play Again</button>
-    <button class="btn-ghost" onclick="goHome()">← Menu</button>
+    <button class="btn-main" id="btn-again" onclick="restart()">Play Again</button>
+    <button class="btn-ghost" id="btn-menu" onclick="goHome()">← Menu</button>
   </div>
 </div>
 
 <script>
+// ── UI STRINGS ────────────────────────────────────────────────────────────────
+var UI = {
+  en: {
+    title:'📜 History Quiz', sub:'Test your knowledge of world history',
+    chooseDiff:'Choose difficulty', langBtn:'🌐 Language', modalTitle:'Choose Language', closeBtn:'Close',
+    easy:'Easy', med:'Medium', hard:'Hard',
+    easyDesc:'20s · Familiar events', medDesc:'15s · Deeper knowledge', hardDesc:'10s · Expert level',
+    easyPill:'🟢 Easy best:', medPill:'🟡 Medium best:', hardPill:'🔴 Hard best:',
+    qOf:'Question {n} of {t}',
+    grades:['🏆 Outstanding!','🎉 Great job!','👍 Not bad!','📚 Keep studying!','💀 Rough one…'],
+    correct:'Correct', avgSpeed:'Avg speed', bestStreak:'Best streak', highScore:'High score',
+    playAgain:'Play Again', menu:'← Menu',
+  },
+  ru: {
+    title:'📜 История: Викторина', sub:'Проверь свои знания по истории мира',
+    chooseDiff:'Выбери сложность', langBtn:'🌐 Язык', modalTitle:'Выбери язык', closeBtn:'Закрыть',
+    easy:'Лёгкий', med:'Средний', hard:'Сложный',
+    easyDesc:'20с · Знакомые события', medDesc:'15с · Глубже в историю', hardDesc:'10с · Уровень эксперта',
+    easyPill:'🟢 Лёгкий рекорд:', medPill:'🟡 Средний рекорд:', hardPill:'🔴 Сложный рекорд:',
+    qOf:'Вопрос {n} из {t}',
+    grades:['🏆 Великолепно!','🎉 Отлично!','👍 Неплохо!','📚 Учи дальше!','💀 Тяжело…'],
+    correct:'Правильно', avgSpeed:'Ср. скорость', bestStreak:'Серия', highScore:'Рекорд',
+    playAgain:'Играть снова', menu:'← Меню',
+  },
+  fr: {
+    title:'📜 Quiz d\'Histoire', sub:'Testez vos connaissances en histoire mondiale',
+    chooseDiff:'Choisissez la difficulté', langBtn:'🌐 Langue', modalTitle:'Choisir la langue', closeBtn:'Fermer',
+    easy:'Facile', med:'Moyen', hard:'Difficile',
+    easyDesc:'20s · Événements familiers', medDesc:'15s · Connaissance approfondie', hardDesc:'10s · Niveau expert',
+    easyPill:'🟢 Facile record:', medPill:'🟡 Moyen record:', hardPill:'🔴 Difficile record:',
+    qOf:'Question {n} sur {t}',
+    grades:['🏆 Exceptionnel !','🎉 Excellent !','👍 Pas mal !','📚 Continuez !','💀 Difficile…'],
+    correct:'Correct', avgSpeed:'Vitesse moy.', bestStreak:'Série', highScore:'Meilleur score',
+    playAgain:'Rejouer', menu:'← Menu',
+  },
+  de: {
+    title:'📜 Geschichts-Quiz', sub:'Teste dein Wissen über Weltgeschichte',
+    chooseDiff:'Schwierigkeit wählen', langBtn:'🌐 Sprache', modalTitle:'Sprache wählen', closeBtn:'Schließen',
+    easy:'Einfach', med:'Mittel', hard:'Schwer',
+    easyDesc:'20s · Bekannte Ereignisse', medDesc:'15s · Tieferes Wissen', hardDesc:'10s · Expertenebene',
+    easyPill:'🟢 Einfach Rekord:', medPill:'🟡 Mittel Rekord:', hardPill:'🔴 Schwer Rekord:',
+    qOf:'Frage {n} von {t}',
+    grades:['🏆 Hervorragend!','🎉 Sehr gut!','👍 Nicht schlecht!','📚 Weiter lernen!','💀 Schwierig…'],
+    correct:'Richtig', avgSpeed:'Ø Tempo', bestStreak:'Serie', highScore:'Highscore',
+    playAgain:'Nochmal spielen', menu:'← Menü',
+  },
+  it: {
+    title:'📜 Quiz di Storia', sub:'Metti alla prova le tue conoscenze di storia mondiale',
+    chooseDiff:'Scegli la difficoltà', langBtn:'🌐 Lingua', modalTitle:'Scegli la lingua', closeBtn:'Chiudi',
+    easy:'Facile', med:'Medio', hard:'Difficile',
+    easyDesc:'20s · Eventi familiari', medDesc:'15s · Conoscenza approfondita', hardDesc:'10s · Livello esperto',
+    easyPill:'🟢 Facile record:', medPill:'🟡 Medio record:', hardPill:'🔴 Difficile record:',
+    qOf:'Domanda {n} di {t}',
+    grades:['🏆 Eccezionale!','🎉 Ottimo!','👍 Non male!','📚 Continua a studiare!','💀 Difficile…'],
+    correct:'Corretti', avgSpeed:'Velocità media', bestStreak:'Serie', highScore:'Punteggio max',
+    playAgain:'Gioca ancora', menu:'← Menu',
+  }
+};
+
 // ── QUESTION BANK ─────────────────────────────────────────────────────────────
 var DB = {
-  easy: [
-    { q: 'Who was the first President of the United States?', answer: 'George Washington', opts: ['George Washington', 'Abraham Lincoln', 'Thomas Jefferson', 'John Adams'] },
-    { q: 'In which year did World War II end?', answer: '1945', opts: ['1943', '1944', '1945', '1946'] },
-    { q: 'Who was the first person to walk on the Moon?', answer: 'Neil Armstrong', opts: ['Buzz Aldrin', 'Neil Armstrong', 'Yuri Gagarin', 'John Glenn'] },
-    { q: 'Which empire built the Colosseum in Rome?', answer: 'Roman Empire', opts: ['Greek Empire', 'Ottoman Empire', 'Roman Empire', 'Byzantine Empire'] },
-    { q: 'In which year did Christopher Columbus first reach the Americas?', answer: '1492', opts: ['1488', '1492', '1498', '1502'] },
-    { q: 'Which country gifted the Statue of Liberty to the United States?', answer: 'France', opts: ['Britain', 'Spain', 'France', 'Italy'] },
-    { q: 'Who was the primary author of the Declaration of Independence?', answer: 'Thomas Jefferson', opts: ['Benjamin Franklin', 'John Adams', 'George Washington', 'Thomas Jefferson'] },
-    { q: 'What was the name of the first artificial Earth satellite?', answer: 'Sputnik 1', opts: ['Explorer 1', 'Vostok 1', 'Sputnik 1', 'Apollo 1'] },
-    { q: 'The Great Wall of China was primarily built to defend against which group?', answer: 'Mongols', opts: ['Huns', 'Mongols', 'Persians', 'Japanese'] },
-    { q: 'In which country did the Industrial Revolution begin?', answer: 'Britain', opts: ['France', 'Germany', 'Britain', 'United States'] },
-    { q: 'What year did the Berlin Wall fall?', answer: '1989', opts: ['1987', '1988', '1989', '1991'] },
-    { q: 'Who delivered the famous "I Have a Dream" speech in 1963?', answer: 'Martin Luther King Jr.', opts: ['Malcolm X', 'Martin Luther King Jr.', 'John Lewis', 'Thurgood Marshall'] },
-    { q: 'Which ancient civilization built the pyramids at Giza?', answer: 'Ancient Egyptians', opts: ['Sumerians', 'Ancient Egyptians', 'Phoenicians', 'Assyrians'] },
-    { q: 'In which year did the Titanic sink?', answer: '1912', opts: ['1910', '1911', '1912', '1914'] },
-    { q: 'Who was the leader of Nazi Germany during World War II?', answer: 'Adolf Hitler', opts: ['Heinrich Himmler', 'Joseph Goebbels', 'Hermann Göring', 'Adolf Hitler'] },
-  ],
-  medium: [
-    { q: 'The Magna Carta was signed in which year?', answer: '1215', opts: ['1066', '1189', '1215', '1265'] },
-    { q: 'Which battle in 1815 ended Napoleon\'s rule permanently?', answer: 'Battle of Waterloo', opts: ['Battle of Leipzig', 'Battle of Austerlitz', 'Battle of Trafalgar', 'Battle of Waterloo'] },
-    { q: 'The Meiji Restoration of 1868 modernised which country?', answer: 'Japan', opts: ['China', 'Korea', 'Japan', 'Vietnam'] },
-    { q: 'Who commanded Allied forces on D-Day in 1944?', answer: 'Dwight D. Eisenhower', opts: ['George Patton', 'Bernard Montgomery', 'Dwight D. Eisenhower', 'Omar Bradley'] },
-    { q: 'Which civilization built Machu Picchu?', answer: 'Inca', opts: ['Aztec', 'Maya', 'Inca', 'Olmec'] },
-    { q: 'The Spanish Armada was defeated in which year?', answer: '1588', opts: ['1571', '1581', '1588', '1600'] },
-    { q: 'Who was the first woman to win a Nobel Prize?', answer: 'Marie Curie', opts: ['Bertha von Suttner', 'Marie Curie', 'Grazia Deledda', 'Jane Addams'] },
-    { q: 'The Opium Wars were fought between China and which country?', answer: 'Britain', opts: ['France', 'Russia', 'Britain', 'United States'] },
-    { q: 'The Rwandan Genocide occurred in which year?', answer: '1994', opts: ['1990', '1992', '1994', '1996'] },
-    { q: 'Which document formally ended World War I?', answer: 'Treaty of Versailles', opts: ['Treaty of Brest-Litovsk', 'Treaty of Paris', 'Treaty of Versailles', 'Treaty of Locarno'] },
-    { q: 'Which Roman general crossed the Rubicon river in 49 BC?', answer: 'Julius Caesar', opts: ['Pompey', 'Mark Antony', 'Julius Caesar', 'Crassus'] },
-    { q: 'The Thirty Years\' War was primarily fought in which region?', answer: 'Central Europe', opts: ['France', 'Italy', 'Central Europe', 'Scandinavia'] },
-    { q: 'Which empire did Alexander the Great inherit from his father Philip II?', answer: 'Macedonian Empire', opts: ['Persian Empire', 'Athenian Empire', 'Macedonian Empire', 'Spartan League'] },
-    { q: 'The French Revolution began in which year?', answer: '1789', opts: ['1776', '1783', '1789', '1793'] },
-    { q: 'Who founded the Mongol Empire?', answer: 'Genghis Khan', opts: ['Kublai Khan', 'Timur', 'Genghis Khan', 'Ögedei Khan'] },
-  ],
-  hard: [
-    { q: 'The Battle of Adwa (1896) was a decisive African victory against colonialism by which nation?', answer: 'Ethiopia', opts: ['Sudan', 'Somalia', 'Ethiopia', 'Eritrea'] },
-    { q: 'Which Chinese dynasty built the first iteration of the Grand Canal?', answer: 'Sui dynasty', opts: ['Han dynasty', 'Tang dynasty', 'Sui dynasty', 'Ming dynasty'] },
-    { q: 'Who was Haiti\'s first ruler after the revolution that created the first Black republic?', answer: 'Jean-Jacques Dessalines', opts: ['Toussaint Louverture', 'Jean-Jacques Dessalines', 'Henri Christophe', 'Alexandre Pétion'] },
-    { q: 'The Peace of Augsburg (1555) established which religious principle?', answer: 'Cuius regio, eius religio', opts: ['Cujus regio, eius lingua', 'Cuius regio, eius religio', 'Rex non potest peccare', 'Fides et ratio'] },
-    { q: 'Which Byzantine emperor compiled the Corpus Juris Civilis?', answer: 'Justinian I', opts: ['Heraclius', 'Leo III', 'Justinian I', 'Basil II'] },
-    { q: 'The Zimmermann Telegram (1917) proposed a military alliance between Germany and which country?', answer: 'Mexico', opts: ['Austria-Hungary', 'Ottoman Empire', 'Mexico', 'Argentina'] },
-    { q: 'The Sykes-Picot Agreement (1916) secretly divided the Middle East between which two powers?', answer: 'Britain and France', opts: ['Britain and Russia', 'France and Russia', 'Britain and France', 'Britain and Italy'] },
-    { q: 'Which Spartan king led the defense at the Battle of Thermopylae (480 BC)?', answer: 'Leonidas I', opts: ['Cleomenes I', 'Agesilaus II', 'Leonidas I', 'Pausanias'] },
-    { q: 'The Scramble for Africa was formalised at which conference?', answer: 'Berlin Conference (1884–85)', opts: ['Congress of Vienna', 'Treaty of Tordesillas', 'Berlin Conference (1884–85)', 'Treaty of Utrecht'] },
-    { q: 'Which Indian emperor converted to Buddhism after the Kalinga War?', answer: 'Ashoka', opts: ['Chandragupta Maurya', 'Bindusara', 'Ashoka', 'Harsha'] },
-    { q: 'The 1683 Siege of Vienna halted the advance of which empire into Central Europe?', answer: 'Ottoman Empire', opts: ['Safavid Empire', 'Mughal Empire', 'Ottoman Empire', 'Russian Empire'] },
-    { q: 'Who authored "The Prince," the foundational text of political realism?', answer: 'Niccolò Machiavelli', opts: ['Thomas More', 'Erasmus', 'Francis Bacon', 'Niccolò Machiavelli'] },
-    { q: 'The First Punic War (264–241 BC) was primarily fought over which island?', answer: 'Sicily', opts: ['Sardinia', 'Corsica', 'Sicily', 'Malta'] },
-    { q: 'Which empire controlled the Silk Road during the 13th–14th centuries?', answer: 'Mongol Empire', opts: ['Ottoman Empire', 'Tang dynasty', 'Mongol Empire', 'Timurid Empire'] },
-    { q: 'The Defenestration of Prague in 1618 triggered which major European conflict?', answer: 'Thirty Years\' War', opts: ['Seven Years\' War', 'War of Spanish Succession', 'Thirty Years\' War', 'Northern War'] },
-  ]
+  en: {
+    easy: [
+      {q:'Who was the first President of the United States?',answer:'George Washington',opts:['George Washington','Abraham Lincoln','Thomas Jefferson','John Adams']},
+      {q:'In which year did World War II end?',answer:'1945',opts:['1943','1944','1945','1946']},
+      {q:'Who was the first person to walk on the Moon?',answer:'Neil Armstrong',opts:['Buzz Aldrin','Neil Armstrong','Yuri Gagarin','John Glenn']},
+      {q:'Which empire built the Colosseum in Rome?',answer:'Roman Empire',opts:['Greek Empire','Ottoman Empire','Roman Empire','Byzantine Empire']},
+      {q:'In which year did Christopher Columbus first reach the Americas?',answer:'1492',opts:['1488','1492','1498','1502']},
+      {q:'Which country gifted the Statue of Liberty to the United States?',answer:'France',opts:['Britain','Spain','France','Italy']},
+      {q:'Who was the primary author of the Declaration of Independence?',answer:'Thomas Jefferson',opts:['Benjamin Franklin','John Adams','George Washington','Thomas Jefferson']},
+      {q:'What was the name of the first artificial Earth satellite?',answer:'Sputnik 1',opts:['Explorer 1','Vostok 1','Sputnik 1','Apollo 1']},
+      {q:'The Great Wall of China was built to defend against which group?',answer:'Mongols',opts:['Huns','Mongols','Persians','Japanese']},
+      {q:'In which country did the Industrial Revolution begin?',answer:'Britain',opts:['France','Germany','Britain','United States']},
+      {q:'What year did the Berlin Wall fall?',answer:'1989',opts:['1987','1988','1989','1991']},
+      {q:'Who delivered the "I Have a Dream" speech in 1963?',answer:'Martin Luther King Jr.',opts:['Malcolm X','Martin Luther King Jr.','John Lewis','Thurgood Marshall']},
+      {q:'Which civilization built the pyramids at Giza?',answer:'Ancient Egyptians',opts:['Sumerians','Ancient Egyptians','Phoenicians','Assyrians']},
+      {q:'In which year did the Titanic sink?',answer:'1912',opts:['1910','1911','1912','1914']},
+      {q:'Who led Nazi Germany during World War II?',answer:'Adolf Hitler',opts:['Heinrich Himmler','Joseph Goebbels','Hermann Göring','Adolf Hitler']},
+    ],
+    medium: [
+      {q:'The Magna Carta was signed in which year?',answer:'1215',opts:['1066','1189','1215','1265']},
+      {q:'Which battle in 1815 ended Napoleon\'s rule permanently?',answer:'Battle of Waterloo',opts:['Battle of Leipzig','Battle of Austerlitz','Battle of Trafalgar','Battle of Waterloo']},
+      {q:'The Meiji Restoration of 1868 modernised which country?',answer:'Japan',opts:['China','Korea','Japan','Vietnam']},
+      {q:'Who commanded Allied forces on D-Day in 1944?',answer:'Dwight D. Eisenhower',opts:['George Patton','Bernard Montgomery','Dwight D. Eisenhower','Omar Bradley']},
+      {q:'Which civilization built Machu Picchu?',answer:'Inca',opts:['Aztec','Maya','Inca','Olmec']},
+      {q:'The Spanish Armada was defeated in which year?',answer:'1588',opts:['1571','1581','1588','1600']},
+      {q:'Who was the first woman to win a Nobel Prize?',answer:'Marie Curie',opts:['Bertha von Suttner','Marie Curie','Grazia Deledda','Jane Addams']},
+      {q:'The Opium Wars were fought between China and which country?',answer:'Britain',opts:['France','Russia','Britain','United States']},
+      {q:'The Rwandan Genocide occurred in which year?',answer:'1994',opts:['1990','1992','1994','1996']},
+      {q:'Which document formally ended World War I?',answer:'Treaty of Versailles',opts:['Treaty of Brest-Litovsk','Treaty of Paris','Treaty of Versailles','Treaty of Locarno']},
+      {q:'Which Roman general crossed the Rubicon river in 49 BC?',answer:'Julius Caesar',opts:['Pompey','Mark Antony','Julius Caesar','Crassus']},
+      {q:'The Thirty Years\' War was primarily fought in which region?',answer:'Central Europe',opts:['France','Italy','Central Europe','Scandinavia']},
+      {q:'Which empire did Alexander the Great inherit from his father Philip II?',answer:'Macedonian Empire',opts:['Persian Empire','Athenian Empire','Macedonian Empire','Spartan League']},
+      {q:'The French Revolution began in which year?',answer:'1789',opts:['1776','1783','1789','1793']},
+      {q:'Who founded the Mongol Empire?',answer:'Genghis Khan',opts:['Kublai Khan','Timur','Genghis Khan','Ögedei Khan']},
+    ],
+    hard: [
+      {q:'The Battle of Adwa (1896) was a decisive African victory against colonialism by which nation?',answer:'Ethiopia',opts:['Sudan','Somalia','Ethiopia','Eritrea']},
+      {q:'Which Chinese dynasty built the first Grand Canal?',answer:'Sui dynasty',opts:['Han dynasty','Tang dynasty','Sui dynasty','Ming dynasty']},
+      {q:'Who was Haiti\'s first ruler after the revolution that created the first Black republic?',answer:'Jean-Jacques Dessalines',opts:['Toussaint Louverture','Jean-Jacques Dessalines','Henri Christophe','Alexandre Pétion']},
+      {q:'The Peace of Augsburg (1555) established which religious principle?',answer:'Cuius regio, eius religio',opts:['Cujus regio, eius lingua','Cuius regio, eius religio','Rex non potest peccare','Fides et ratio']},
+      {q:'Which Byzantine emperor compiled the Corpus Juris Civilis?',answer:'Justinian I',opts:['Heraclius','Leo III','Justinian I','Basil II']},
+      {q:'The Zimmermann Telegram (1917) proposed a military alliance between Germany and which country?',answer:'Mexico',opts:['Austria-Hungary','Ottoman Empire','Mexico','Argentina']},
+      {q:'The Sykes-Picot Agreement (1916) secretly divided the Middle East between which two powers?',answer:'Britain and France',opts:['Britain and Russia','France and Russia','Britain and France','Britain and Italy']},
+      {q:'Which Spartan king led the defense at the Battle of Thermopylae (480 BC)?',answer:'Leonidas I',opts:['Cleomenes I','Agesilaus II','Leonidas I','Pausanias']},
+      {q:'The Scramble for Africa was formalised at which conference?',answer:'Berlin Conference (1884–85)',opts:['Congress of Vienna','Treaty of Tordesillas','Berlin Conference (1884–85)','Treaty of Utrecht']},
+      {q:'Which Indian emperor converted to Buddhism after the Kalinga War?',answer:'Ashoka',opts:['Chandragupta Maurya','Bindusara','Ashoka','Harsha']},
+      {q:'The 1683 Siege of Vienna halted the advance of which empire into Central Europe?',answer:'Ottoman Empire',opts:['Safavid Empire','Mughal Empire','Ottoman Empire','Russian Empire']},
+      {q:'Who authored "The Prince," the foundational text of political realism?',answer:'Niccolò Machiavelli',opts:['Thomas More','Erasmus','Francis Bacon','Niccolò Machiavelli']},
+      {q:'The First Punic War (264–241 BC) was primarily fought over which island?',answer:'Sicily',opts:['Sardinia','Corsica','Sicily','Malta']},
+      {q:'Which empire controlled the Silk Road during the 13th–14th centuries?',answer:'Mongol Empire',opts:['Ottoman Empire','Tang dynasty','Mongol Empire','Timurid Empire']},
+      {q:'The Defenestration of Prague in 1618 triggered which major European conflict?',answer:'Thirty Years\' War',opts:['Seven Years\' War','War of Spanish Succession','Thirty Years\' War','Northern War']},
+    ]
+  },
+
+  ru: {
+    easy: [
+      {q:'Кто был первым президентом Соединённых Штатов?',answer:'Джордж Вашингтон',opts:['Джордж Вашингтон','Авраам Линкольн','Томас Джефферсон','Джон Адамс']},
+      {q:'В каком году закончилась Вторая мировая война?',answer:'1945',opts:['1943','1944','1945','1946']},
+      {q:'Кто стал первым человеком, ступившим на Луну?',answer:'Нил Армстронг',opts:['Базз Олдрин','Нил Армстронг','Юрий Гагарин','Джон Гленн']},
+      {q:'Какая империя построила Колизей в Риме?',answer:'Римская империя',opts:['Греческая империя','Османская империя','Римская империя','Византийская империя']},
+      {q:'В каком году Христофор Колумб впервые достиг Америки?',answer:'1492',opts:['1488','1492','1498','1502']},
+      {q:'Какая страна подарила США Статую Свободы?',answer:'Франция',opts:['Великобритания','Испания','Франция','Италия']},
+      {q:'Кто был главным автором Декларации независимости США?',answer:'Томас Джефферсон',opts:['Бенджамин Франклин','Джон Адамс','Джордж Вашингтон','Томас Джефферсон']},
+      {q:'Как назывался первый искусственный спутник Земли?',answer:'Спутник-1',opts:['Эксплорер-1','Восток-1','Спутник-1','Аполлон-1']},
+      {q:'Великая Китайская стена была построена для защиты прежде всего от кого?',answer:'Монголов',opts:['Гуннов','Монголов','Персов','Японцев']},
+      {q:'В какой стране началась Промышленная революция?',answer:'Великобритания',opts:['Франция','Германия','Великобритания','США']},
+      {q:'В каком году пала Берлинская стена?',answer:'1989',opts:['1987','1988','1989','1991']},
+      {q:'Кто произнёс речь «У меня есть мечта» в 1963 году?',answer:'Мартин Лютер Кинг',opts:['Малькольм Икс','Мартин Лютер Кинг','Джон Льюис','Тургуд Маршалл']},
+      {q:'Какая цивилизация построила пирамиды Гизы?',answer:'Древние египтяне',opts:['Шумеры','Древние египтяне','Финикийцы','Ассирийцы']},
+      {q:'В каком году затонул «Титаник»?',answer:'1912',opts:['1910','1911','1912','1914']},
+      {q:'Кто возглавлял нацистскую Германию во Второй мировой войне?',answer:'Адольф Гитлер',opts:['Генрих Гиммлер','Йозеф Геббельс','Герман Геринг','Адольф Гитлер']},
+    ],
+    medium: [
+      {q:'В каком году была подписана Великая хартия вольностей?',answer:'1215',opts:['1066','1189','1215','1265']},
+      {q:'Какое сражение 1815 года окончательно положило конец правлению Наполеона?',answer:'Битва при Ватерлоо',opts:['Битва под Лейпцигом','Битва при Аустерлице','Трафальгарская битва','Битва при Ватерлоо']},
+      {q:'Реставрация Мэйдзи 1868 года модернизировала какую страну?',answer:'Японию',opts:['Китай','Корею','Японию','Вьетнам']},
+      {q:'Кто командовал союзными войсками в день «Д» в 1944 году?',answer:'Дуайт Эйзенхауэр',opts:['Джордж Паттон','Бернард Монтгомери','Дуайт Эйзенхауэр','Омар Брэдли']},
+      {q:'Какая цивилизация построила Мачу-Пикчу?',answer:'Инки',opts:['Ацтеки','Майя','Инки','Ольмеки']},
+      {q:'В каком году была разбита Испанская армада?',answer:'1588',opts:['1571','1581','1588','1600']},
+      {q:'Кто первой среди женщин получила Нобелевскую премию?',answer:'Мария Кюри',opts:['Берта фон Зутнер','Мария Кюри','Грация Деледда','Джейн Аддамс']},
+      {q:'Опиумные войны велись между Китаем и какой страной?',answer:'Великобританией',opts:['Францией','Россией','Великобританией','США']},
+      {q:'В каком году произошёл геноцид в Руанде?',answer:'1994',opts:['1990','1992','1994','1996']},
+      {q:'Какой договор официально завершил Первую мировую войну?',answer:'Версальский договор',opts:['Брест-Литовский договор','Парижский договор','Версальский договор','Локарнские договоры']},
+      {q:'Какой римский полководец перешёл Рубикон в 49 году до н.э.?',answer:'Юлий Цезарь',opts:['Помпей','Марк Антоний','Юлий Цезарь','Красс']},
+      {q:'В основном в каком регионе велась Тридцатилетняя война?',answer:'Центральная Европа',opts:['Франция','Италия','Центральная Европа','Скандинавия']},
+      {q:'Какую империю унаследовал Александр Македонский от Филиппа II?',answer:'Македонская империя',opts:['Персидская империя','Афинская империя','Македонская империя','Спартанский союз']},
+      {q:'В каком году началась Французская революция?',answer:'1789',opts:['1776','1783','1789','1793']},
+      {q:'Кто основал Монгольскую империю?',answer:'Чингисхан',opts:['Хубилай-хан','Тимур','Чингисхан','Угэдэй-хан']},
+    ],
+    hard: [
+      {q:'Битва при Адуа (1896) — решающая победа над колонизаторами — какой страны?',answer:'Эфиопии',opts:['Судана','Сомали','Эфиопии','Эритреи']},
+      {q:'Какая китайская династия построила первый Великий канал?',answer:'Династия Суй',opts:['Династия Хань','Династия Тан','Династия Суй','Династия Мин']},
+      {q:'Кто стал первым правителем Гаити после революции 1804 года?',answer:'Жан-Жак Дессалин',opts:['Туссен-Лувертюр','Жан-Жак Дессалин','Анри Кристоф','Александр Петион']},
+      {q:'Какой религиозный принцип закрепил Аугсбургский мир (1555)?',answer:'Cuius regio, eius religio',opts:['Cujus regio, eius lingua','Cuius regio, eius religio','Rex non potest peccare','Fides et ratio']},
+      {q:'Какой византийский император составил Corpus Juris Civilis?',answer:'Юстиниан I',opts:['Ираклий','Лев III','Юстиниан I','Василий II']},
+      {q:'Телеграмма Циммермана (1917) предлагала союз Германии с какой страной?',answer:'Мексика',opts:['Австро-Венгрия','Османская империя','Мексика','Аргентина']},
+      {q:'Соглашение Сайкса-Пико (1916) тайно делило Ближний Восток между какими двумя державами?',answer:'Великобритания и Франция',opts:['Великобритания и Россия','Франция и Россия','Великобритания и Франция','Великобритания и Италия']},
+      {q:'Какой спартанский царь возглавил оборону при Фермопилах (480 до н.э.)?',answer:'Леонид I',opts:['Клеомен I','Агесилай II','Леонид I','Павсаний']},
+      {q:'«Гонка за Африкой» была формализована на какой конференции?',answer:'Берлинская конференция (1884–85)',opts:['Венский конгресс','Тордесильясский договор','Берлинская конференция (1884–85)','Утрехтский мир']},
+      {q:'Какой индийский царь принял буддизм после войны в Калинге?',answer:'Ашока',opts:['Чандрагупта Маурья','Биндусара','Ашока','Харша']},
+      {q:'Осада Вены 1683 года остановила продвижение какой империи в Европу?',answer:'Османской империи',opts:['Сефевидской','Империи Великих Моголов','Османской империи','Российской империи']},
+      {q:'Кто написал «Государь» — основополагающий текст политического реализма?',answer:'Никколо Макиавелли',opts:['Томас Мор','Эразм Роттердамский','Фрэнсис Бэкон','Никколо Макиавелли']},
+      {q:'Первая Пуническая война (264–241 до н.э.) велась за какой остров?',answer:'Сицилия',opts:['Сардиния','Корсика','Сицилия','Мальта']},
+      {q:'Какая империя контролировала Шёлковый путь в XIII–XIV веках?',answer:'Монгольская империя',opts:['Османская империя','Династия Тан','Монгольская империя','Империя Тимуридов']},
+      {q:'Дефенестрация Праги 1618 года спровоцировала какой конфликт?',answer:'Тридцатилетняя война',opts:['Семилетняя война','Война за испанское наследство','Тридцатилетняя война','Северная война']},
+    ]
+  },
+
+  fr: {
+    easy: [
+      {q:'Qui fut le premier président des États-Unis ?',answer:'George Washington',opts:['George Washington','Abraham Lincoln','Thomas Jefferson','John Adams']},
+      {q:'En quelle année la Seconde Guerre mondiale s\'est-elle terminée ?',answer:'1945',opts:['1943','1944','1945','1946']},
+      {q:'Qui fut le premier homme à marcher sur la Lune ?',answer:'Neil Armstrong',opts:['Buzz Aldrin','Neil Armstrong','Youri Gagarine','John Glenn']},
+      {q:'Quel empire a construit le Colisée à Rome ?',answer:'Empire romain',opts:['Empire grec','Empire ottoman','Empire romain','Empire byzantin']},
+      {q:'En quelle année Christophe Colomb atteignit-il les Amériques pour la première fois ?',answer:'1492',opts:['1488','1492','1498','1502']},
+      {q:'Quel pays a offert la Statue de la Liberté aux États-Unis ?',answer:'France',opts:['Angleterre','Espagne','France','Italie']},
+      {q:'Qui fut le principal auteur de la Déclaration d\'indépendance ?',answer:'Thomas Jefferson',opts:['Benjamin Franklin','John Adams','George Washington','Thomas Jefferson']},
+      {q:'Quel était le nom du premier satellite artificiel de la Terre ?',answer:'Spoutnik 1',opts:['Explorer 1','Vostok 1','Spoutnik 1','Apollo 1']},
+      {q:'La Grande Muraille de Chine fut construite pour se défendre contre quel groupe ?',answer:'Mongols',opts:['Huns','Mongols','Perses','Japonais']},
+      {q:'Dans quel pays la Révolution industrielle a-t-elle commencé ?',answer:'Royaume-Uni',opts:['France','Allemagne','Royaume-Uni','États-Unis']},
+      {q:'En quelle année le mur de Berlin est-il tombé ?',answer:'1989',opts:['1987','1988','1989','1991']},
+      {q:'Qui a prononcé le discours « J\'ai un rêve » en 1963 ?',answer:'Martin Luther King Jr.',opts:['Malcolm X','Martin Luther King Jr.','John Lewis','Thurgood Marshall']},
+      {q:'Quelle civilisation a construit les pyramides de Gizeh ?',answer:'Égyptiens de l\'Antiquité',opts:['Sumériens','Égyptiens de l\'Antiquité','Phéniciens','Assyriens']},
+      {q:'En quelle année le Titanic a-t-il coulé ?',answer:'1912',opts:['1910','1911','1912','1914']},
+      {q:'Qui dirigeait l\'Allemagne nazie pendant la Seconde Guerre mondiale ?',answer:'Adolf Hitler',opts:['Heinrich Himmler','Joseph Goebbels','Hermann Göring','Adolf Hitler']},
+    ],
+    medium: [
+      {q:'En quelle année la Magna Carta a-t-elle été signée ?',answer:'1215',opts:['1066','1189','1215','1265']},
+      {q:'Quelle bataille en 1815 mit fin définitivement au règne de Napoléon ?',answer:'Bataille de Waterloo',opts:['Bataille de Leipzig','Bataille d\'Austerlitz','Bataille de Trafalgar','Bataille de Waterloo']},
+      {q:'La restauration Meiji de 1868 a modernisé quel pays ?',answer:'Japon',opts:['Chine','Corée','Japon','Vietnam']},
+      {q:'Qui commandait les forces alliées le Jour J en 1944 ?',answer:'Dwight D. Eisenhower',opts:['George Patton','Bernard Montgomery','Dwight D. Eisenhower','Omar Bradley']},
+      {q:'Quelle civilisation a construit le Machu Picchu ?',answer:'Incas',opts:['Aztèques','Mayas','Incas','Olmèques']},
+      {q:'En quelle année l\'Armada espagnole fut-elle vaincue ?',answer:'1588',opts:['1571','1581','1588','1600']},
+      {q:'Qui fut la première femme à recevoir un prix Nobel ?',answer:'Marie Curie',opts:['Bertha von Suttner','Marie Curie','Grazia Deledda','Jane Addams']},
+      {q:'Les guerres de l\'Opium opposaient la Chine à quel pays ?',answer:'Royaume-Uni',opts:['France','Russie','Royaume-Uni','États-Unis']},
+      {q:'En quelle année le génocide rwandais a-t-il eu lieu ?',answer:'1994',opts:['1990','1992','1994','1996']},
+      {q:'Quel document a officiellement mis fin à la Première Guerre mondiale ?',answer:'Traité de Versailles',opts:['Traité de Brest-Litovsk','Traité de Paris','Traité de Versailles','Traité de Locarno']},
+      {q:'Quel général romain traversa le Rubicon en 49 av. J.-C. ?',answer:'Jules César',opts:['Pompée','Marc Antoine','Jules César','Crassus']},
+      {q:'La guerre de Trente Ans se déroula principalement dans quelle région ?',answer:'Europe centrale',opts:['France','Italie','Europe centrale','Scandinavie']},
+      {q:'Quel empire Alexandre le Grand hérita-t-il de son père Philippe II ?',answer:'Empire macédonien',opts:['Empire perse','Empire athénien','Empire macédonien','Ligue spartiate']},
+      {q:'En quelle année la Révolution française a-t-elle commencé ?',answer:'1789',opts:['1776','1783','1789','1793']},
+      {q:'Qui a fondé l\'Empire mongol ?',answer:'Gengis Khan',opts:['Kubilai Khan','Timour','Gengis Khan','Ögedei Khan']},
+    ],
+    hard: [
+      {q:'La bataille d\'Adoua (1896) fut une victoire décisive contre le colonialisme pour quelle nation africaine ?',answer:'Éthiopie',opts:['Soudan','Somalie','Éthiopie','Érythrée']},
+      {q:'Quelle dynastie chinoise construisit le premier Grand Canal ?',answer:'Dynastie Sui',opts:['Dynastie Han','Dynastie Tang','Dynastie Sui','Dynastie Ming']},
+      {q:'Qui fut le premier dirigeant d\'Haïti après la révolution de 1804 ?',answer:'Jean-Jacques Dessalines',opts:['Toussaint Louverture','Jean-Jacques Dessalines','Henri Christophe','Alexandre Pétion']},
+      {q:'La paix d\'Augsbourg (1555) établit quel principe religieux ?',answer:'Cuius regio, eius religio',opts:['Cujus regio, eius lingua','Cuius regio, eius religio','Rex non potest peccare','Fides et ratio']},
+      {q:'Quel empereur byzantin compila le Corpus Juris Civilis ?',answer:'Justinien Ier',opts:['Héraclius','Léon III','Justinien Ier','Basile II']},
+      {q:'Le télégramme Zimmermann (1917) proposait une alliance entre l\'Allemagne et quel pays ?',answer:'Mexique',opts:['Autriche-Hongrie','Empire ottoman','Mexique','Argentine']},
+      {q:'L\'accord Sykes-Picot (1916) partageait secrètement le Moyen-Orient entre quelles deux puissances ?',answer:'Royaume-Uni et France',opts:['Royaume-Uni et Russie','France et Russie','Royaume-Uni et France','Royaume-Uni et Italie']},
+      {q:'Quel roi spartiate dirigea la défense aux Thermopyles (480 av. J.-C.) ?',answer:'Léonidas Ier',opts:['Cléomène Ier','Agésilas II','Léonidas Ier','Pausanias']},
+      {q:'Le partage de l\'Afrique fut formalisé lors de quelle conférence ?',answer:'Conférence de Berlin (1884–85)',opts:['Congrès de Vienne','Traité de Tordesillas','Conférence de Berlin (1884–85)','Traité d\'Utrecht']},
+      {q:'Quel empereur indien se convertit au bouddhisme après la guerre de Kalinga ?',answer:'Ashoka',opts:['Chandragupta Maurya','Bindusara','Ashoka','Harsha']},
+      {q:'Le siège de Vienne en 1683 stoppa l\'avancée de quel empire en Europe centrale ?',answer:'Empire ottoman',opts:['Empire safavide','Empire moghol','Empire ottoman','Empire russe']},
+      {q:'Qui écrivit « Le Prince », texte fondateur du réalisme politique ?',answer:'Nicolas Machiavel',opts:['Thomas More','Érasme','Francis Bacon','Nicolas Machiavel']},
+      {q:'La première guerre punique (264–241 av. J.-C.) portait principalement sur quelle île ?',answer:'Sicile',opts:['Sardaigne','Corse','Sicile','Malte']},
+      {q:'Quel empire contrôlait la Route de la Soie aux XIIIe–XIVe siècles ?',answer:'Empire mongol',opts:['Empire ottoman','Dynastie Tang','Empire mongol','Empire timouride']},
+      {q:'La défenestration de Prague en 1618 déclencha quel grand conflit européen ?',answer:'Guerre de Trente Ans',opts:['Guerre de Sept Ans','Guerre de Succession d\'Espagne','Guerre de Trente Ans','Grande Guerre du Nord']},
+    ]
+  },
+
+  de: {
+    easy: [
+      {q:'Wer war der erste Präsident der Vereinigten Staaten?',answer:'George Washington',opts:['George Washington','Abraham Lincoln','Thomas Jefferson','John Adams']},
+      {q:'In welchem Jahr endete der Zweite Weltkrieg?',answer:'1945',opts:['1943','1944','1945','1946']},
+      {q:'Wer war der erste Mensch, der den Mond betrat?',answer:'Neil Armstrong',opts:['Buzz Aldrin','Neil Armstrong','Juri Gagarin','John Glenn']},
+      {q:'Welches Reich baute das Kolosseum in Rom?',answer:'Römisches Reich',opts:['Griechisches Reich','Osmanisches Reich','Römisches Reich','Byzantinisches Reich']},
+      {q:'In welchem Jahr erreichte Christoph Kolumbus erstmals Amerika?',answer:'1492',opts:['1488','1492','1498','1502']},
+      {q:'Welches Land schenkte den USA die Freiheitsstatue?',answer:'Frankreich',opts:['Großbritannien','Spanien','Frankreich','Italien']},
+      {q:'Wer war der Hauptautor der Unabhängigkeitserklärung?',answer:'Thomas Jefferson',opts:['Benjamin Franklin','John Adams','George Washington','Thomas Jefferson']},
+      {q:'Wie hieß der erste künstliche Erdsatellit?',answer:'Sputnik 1',opts:['Explorer 1','Wostok 1','Sputnik 1','Apollo 1']},
+      {q:'Die Chinesische Mauer wurde zum Schutz vor welchem Volk gebaut?',answer:'Mongolen',opts:['Hunnen','Mongolen','Perser','Japaner']},
+      {q:'In welchem Land begann die Industrielle Revolution?',answer:'Großbritannien',opts:['Frankreich','Deutschland','Großbritannien','USA']},
+      {q:'In welchem Jahr fiel die Berliner Mauer?',answer:'1989',opts:['1987','1988','1989','1991']},
+      {q:'Wer hielt 1963 die Rede „Ich habe einen Traum"?',answer:'Martin Luther King Jr.',opts:['Malcolm X','Martin Luther King Jr.','John Lewis','Thurgood Marshall']},
+      {q:'Welche Zivilisation baute die Pyramiden von Gizeh?',answer:'Alte Ägypter',opts:['Sumerer','Alte Ägypter','Phönizier','Assyrer']},
+      {q:'In welchem Jahr sank die Titanic?',answer:'1912',opts:['1910','1911','1912','1914']},
+      {q:'Wer führte Nazi-Deutschland im Zweiten Weltkrieg?',answer:'Adolf Hitler',opts:['Heinrich Himmler','Joseph Goebbels','Hermann Göring','Adolf Hitler']},
+    ],
+    medium: [
+      {q:'In welchem Jahr wurde die Magna Carta unterzeichnet?',answer:'1215',opts:['1066','1189','1215','1265']},
+      {q:'Welche Schlacht 1815 beendete Napoleons Herrschaft endgültig?',answer:'Schlacht bei Waterloo',opts:['Schlacht bei Leipzig','Schlacht bei Austerlitz','Seeschlacht bei Trafalgar','Schlacht bei Waterloo']},
+      {q:'Die Meiji-Restauration von 1868 modernisierte welches Land?',answer:'Japan',opts:['China','Korea','Japan','Vietnam']},
+      {q:'Wer befehligte die alliierten Streitkräfte am D-Day 1944?',answer:'Dwight D. Eisenhower',opts:['George Patton','Bernard Montgomery','Dwight D. Eisenhower','Omar Bradley']},
+      {q:'Welche Zivilisation baute Machu Picchu?',answer:'Inka',opts:['Azteken','Maya','Inka','Olmeken']},
+      {q:'In welchem Jahr wurde die Spanische Armada besiegt?',answer:'1588',opts:['1571','1581','1588','1600']},
+      {q:'Wer war die erste Frau, die den Nobelpreis erhielt?',answer:'Marie Curie',opts:['Bertha von Suttner','Marie Curie','Grazia Deledda','Jane Addams']},
+      {q:'Die Opiumkriege wurden zwischen China und welchem Land geführt?',answer:'Großbritannien',opts:['Frankreich','Russland','Großbritannien','USA']},
+      {q:'In welchem Jahr fand der Völkermord in Ruanda statt?',answer:'1994',opts:['1990','1992','1994','1996']},
+      {q:'Welches Dokument beendete offiziell den Ersten Weltkrieg?',answer:'Vertrag von Versailles',opts:['Vertrag von Brest-Litowsk','Vertrag von Paris','Vertrag von Versailles','Vertrag von Locarno']},
+      {q:'Welcher römische Feldherr überschritt 49 v. Chr. den Rubikon?',answer:'Julius Cäsar',opts:['Pompeius','Marcus Antonius','Julius Cäsar','Crassus']},
+      {q:'Der Dreißigjährige Krieg wurde hauptsächlich in welcher Region geführt?',answer:'Mitteleuropa',opts:['Frankreich','Italien','Mitteleuropa','Skandinavien']},
+      {q:'Welches Reich erbte Alexander der Große von seinem Vater Philipp II.?',answer:'Makedonisches Reich',opts:['Persisches Reich','Athenisches Reich','Makedonisches Reich','Spartanischer Bund']},
+      {q:'In welchem Jahr begann die Französische Revolution?',answer:'1789',opts:['1776','1783','1789','1793']},
+      {q:'Wer gründete das Mongolische Reich?',answer:'Dschingis Khan',opts:['Kublai Khan','Timur','Dschingis Khan','Ögedei Khan']},
+    ],
+    hard: [
+      {q:'Die Schlacht von Adua (1896) war ein entscheidender Sieg gegen den Kolonialismus für welche afrikanische Nation?',answer:'Äthiopien',opts:['Sudan','Somalia','Äthiopien','Eritrea']},
+      {q:'Welche chinesische Dynastie baute den ersten Großen Kanal?',answer:'Sui-Dynastie',opts:['Han-Dynastie','Tang-Dynastie','Sui-Dynastie','Ming-Dynastie']},
+      {q:'Wer war der erste Herrscher Haitis nach der Revolution von 1804?',answer:'Jean-Jacques Dessalines',opts:['Toussaint Louverture','Jean-Jacques Dessalines','Henri Christophe','Alexandre Pétion']},
+      {q:'Der Augsburger Religionsfrieden (1555) etablierte welchen Grundsatz?',answer:'Cuius regio, eius religio',opts:['Cujus regio, eius lingua','Cuius regio, eius religio','Rex non potest peccare','Fides et ratio']},
+      {q:'Welcher byzantinische Kaiser stellte das Corpus Juris Civilis zusammen?',answer:'Justinian I.',opts:['Heraklius','Leo III.','Justinian I.','Basileios II.']},
+      {q:'Das Zimmermann-Telegramm (1917) schlug ein Bündnis zwischen Deutschland und welchem Land vor?',answer:'Mexiko',opts:['Österreich-Ungarn','Osmanisches Reich','Mexiko','Argentinien']},
+      {q:'Das Sykes-Picot-Abkommen (1916) teilte den Nahen Osten zwischen welchen zwei Mächten auf?',answer:'Großbritannien und Frankreich',opts:['Großbritannien und Russland','Frankreich und Russland','Großbritannien und Frankreich','Großbritannien und Italien']},
+      {q:'Welcher spartanische König leitete die Verteidigung bei den Thermopylen (480 v. Chr.)?',answer:'Leonidas I.',opts:['Kleomenes I.','Agesilaos II.','Leonidas I.','Pausanias']},
+      {q:'Der Wettlauf um Afrika wurde auf welcher Konferenz formalisiert?',answer:'Berliner Konferenz (1884–85)',opts:['Wiener Kongress','Vertrag von Tordesillas','Berliner Konferenz (1884–85)','Vertrag von Utrecht']},
+      {q:'Welcher indische Kaiser konvertierte nach dem Kalinga-Krieg zum Buddhismus?',answer:'Ashoka',opts:['Chandragupta Maurya','Bindusara','Ashoka','Harsha']},
+      {q:'Die Belagerung Wiens 1683 stoppte den Vormarsch welchen Reiches nach Mitteleuropa?',answer:'Osmanisches Reich',opts:['Safawidisches Reich','Mogulreich','Osmanisches Reich','Russisches Reich']},
+      {q:'Wer verfasste „Der Fürst", den Grundlagentext des politischen Realismus?',answer:'Niccolò Machiavelli',opts:['Thomas Morus','Erasmus','Francis Bacon','Niccolò Machiavelli']},
+      {q:'Der Erste Punische Krieg (264–241 v. Chr.) drehte sich hauptsächlich um welche Insel?',answer:'Sizilien',opts:['Sardinien','Korsika','Sizilien','Malta']},
+      {q:'Welches Reich kontrollierte die Seidenstraße im 13.–14. Jahrhundert?',answer:'Mongolisches Reich',opts:['Osmanisches Reich','Tang-Dynastie','Mongolisches Reich','Timuridenreich']},
+      {q:'Der Prager Fenstersturz 1618 löste welchen großen Konflikt aus?',answer:'Dreißigjähriger Krieg',opts:['Siebenjähriger Krieg','Spanischer Erbfolgekrieg','Dreißigjähriger Krieg','Großer Nordischer Krieg']},
+    ]
+  },
+
+  it: {
+    easy: [
+      {q:'Chi fu il primo presidente degli Stati Uniti?',answer:'George Washington',opts:['George Washington','Abraham Lincoln','Thomas Jefferson','John Adams']},
+      {q:'In che anno finì la Seconda Guerra Mondiale?',answer:'1945',opts:['1943','1944','1945','1946']},
+      {q:'Chi fu il primo uomo a camminare sulla Luna?',answer:'Neil Armstrong',opts:['Buzz Aldrin','Neil Armstrong','Yuri Gagarin','John Glenn']},
+      {q:'Quale impero costruì il Colosseo a Roma?',answer:'Impero Romano',opts:['Impero Greco','Impero Ottomano','Impero Romano','Impero Bizantino']},
+      {q:'In che anno Cristoforo Colombo raggiunse per la prima volta le Americhe?',answer:'1492',opts:['1488','1492','1498','1502']},
+      {q:'Quale paese donò la Statua della Libertà agli Stati Uniti?',answer:'Francia',opts:['Gran Bretagna','Spagna','Francia','Italia']},
+      {q:'Chi fu il principale autore della Dichiarazione d\'Indipendenza?',answer:'Thomas Jefferson',opts:['Benjamin Franklin','John Adams','George Washington','Thomas Jefferson']},
+      {q:'Come si chiamava il primo satellite artificiale della Terra?',answer:'Sputnik 1',opts:['Explorer 1','Vostok 1','Sputnik 1','Apollo 1']},
+      {q:'La Grande Muraglia cinese fu costruita per difendersi principalmente da quale gruppo?',answer:'Mongoli',opts:['Unni','Mongoli','Persiani','Giapponesi']},
+      {q:'In quale paese iniziò la Rivoluzione Industriale?',answer:'Gran Bretagna',opts:['Francia','Germania','Gran Bretagna','Stati Uniti']},
+      {q:'In che anno cadde il Muro di Berlino?',answer:'1989',opts:['1987','1988','1989','1991']},
+      {q:'Chi tenne il famoso discorso "Ho un sogno" nel 1963?',answer:'Martin Luther King Jr.',opts:['Malcolm X','Martin Luther King Jr.','John Lewis','Thurgood Marshall']},
+      {q:'Quale civiltà costruì le piramidi di Giza?',answer:'Antichi Egizi',opts:['Sumeri','Antichi Egizi','Fenici','Assiri']},
+      {q:'In che anno affondò il Titanic?',answer:'1912',opts:['1910','1911','1912','1914']},
+      {q:'Chi guidò la Germania nazista durante la Seconda Guerra Mondiale?',answer:'Adolf Hitler',opts:['Heinrich Himmler','Joseph Goebbels','Hermann Göring','Adolf Hitler']},
+    ],
+    medium: [
+      {q:'In che anno fu firmata la Magna Carta?',answer:'1215',opts:['1066','1189','1215','1265']},
+      {q:'Quale battaglia nel 1815 pose fine definitivamente al dominio di Napoleone?',answer:'Battaglia di Waterloo',opts:['Battaglia di Lipsia','Battaglia di Austerlitz','Battaglia di Trafalgar','Battaglia di Waterloo']},
+      {q:'La Restaurazione Meiji del 1868 modernizzò quale paese?',answer:'Giappone',opts:['Cina','Corea','Giappone','Vietnam']},
+      {q:'Chi comandava le forze alleate il Giorno D nel 1944?',answer:'Dwight D. Eisenhower',opts:['George Patton','Bernard Montgomery','Dwight D. Eisenhower','Omar Bradley']},
+      {q:'Quale civiltà costruì Machu Picchu?',answer:'Inca',opts:['Aztechi','Maya','Inca','Olmechi']},
+      {q:'In che anno fu sconfitta l\'Armada Spagnola?',answer:'1588',opts:['1571','1581','1588','1600']},
+      {q:'Chi fu la prima donna a vincere il Premio Nobel?',answer:'Marie Curie',opts:['Bertha von Suttner','Marie Curie','Grazia Deledda','Jane Addams']},
+      {q:'Le Guerre dell\'Oppio si combatterono tra la Cina e quale paese?',answer:'Gran Bretagna',opts:['Francia','Russia','Gran Bretagna','Stati Uniti']},
+      {q:'In che anno avvenne il genocidio in Ruanda?',answer:'1994',opts:['1990','1992','1994','1996']},
+      {q:'Quale documento pose ufficialmente fine alla Prima Guerra Mondiale?',answer:'Trattato di Versailles',opts:['Trattato di Brest-Litovsk','Trattato di Parigi','Trattato di Versailles','Trattato di Locarno']},
+      {q:'Quale generale romano attraversò il Rubicone nel 49 a.C.?',answer:'Giulio Cesare',opts:['Pompeo','Marco Antonio','Giulio Cesare','Crasso']},
+      {q:'La Guerra dei Trent\'Anni si svolse principalmente in quale regione?',answer:'Europa Centrale',opts:['Francia','Italia','Europa Centrale','Scandinavia']},
+      {q:'Quale impero Alessandro Magno ereditò da suo padre Filippo II?',answer:'Impero Macedone',opts:['Impero Persiano','Impero Ateniese','Impero Macedone','Lega Spartana']},
+      {q:'In che anno iniziò la Rivoluzione Francese?',answer:'1789',opts:['1776','1783','1789','1793']},
+      {q:'Chi fondò l\'Impero Mongolo?',answer:'Gengis Khan',opts:['Kublai Khan','Tamerlano','Gengis Khan','Ögedei Khan']},
+    ],
+    hard: [
+      {q:'La Battaglia di Adua (1896) fu una vittoria decisiva contro il colonialismo per quale nazione africana?',answer:'Etiopia',opts:['Sudan','Somalia','Etiopia','Eritrea']},
+      {q:'Quale dinastia cinese costruì il primo Grande Canale?',answer:'Dinastia Sui',opts:['Dinastia Han','Dinastia Tang','Dinastia Sui','Dinastia Ming']},
+      {q:'Chi fu il primo governante di Haiti dopo la rivoluzione del 1804?',answer:'Jean-Jacques Dessalines',opts:['Toussaint Louverture','Jean-Jacques Dessalines','Henri Christophe','Alexandre Pétion']},
+      {q:'La Pace di Augusta (1555) stabilì quale principio religioso?',answer:'Cuius regio, eius religio',opts:['Cujus regio, eius lingua','Cuius regio, eius religio','Rex non potest peccare','Fides et ratio']},
+      {q:'Quale imperatore bizantino compilò il Corpus Juris Civilis?',answer:'Giustiniano I',opts:['Eraclio','Leone III','Giustiniano I','Basilio II']},
+      {q:'Il telegramma Zimmermann (1917) proponeva un\'alleanza tra la Germania e quale paese?',answer:'Messico',opts:['Austria-Ungheria','Impero Ottomano','Messico','Argentina']},
+      {q:'L\'accordo Sykes-Picot (1916) divideva segretamente il Medio Oriente tra quali due potenze?',answer:'Gran Bretagna e Francia',opts:['Gran Bretagna e Russia','Francia e Russia','Gran Bretagna e Francia','Gran Bretagna e Italia']},
+      {q:'Quale re spartano guidò la difesa alle Termopili (480 a.C.)?',answer:'Leonida I',opts:['Cleomene I','Agesilao II','Leonida I','Pausania']},
+      {q:'La Corsa all\'Africa fu formalizzata in quale conferenza?',answer:'Conferenza di Berlino (1884–85)',opts:['Congresso di Vienna','Trattato di Tordesillas','Conferenza di Berlino (1884–85)','Trattato di Utrecht']},
+      {q:'Quale imperatore indiano si convertì al buddismo dopo la guerra di Kalinga?',answer:'Ashoka',opts:['Chandragupta Maurya','Bindusara','Ashoka','Harsha']},
+      {q:'L\'assedio di Vienna del 1683 fermò l\'avanzata di quale impero in Europa Centrale?',answer:'Impero Ottomano',opts:['Impero Safavide','Impero Moghul','Impero Ottomano','Impero Russo']},
+      {q:'Chi scrisse "Il Principe", testo fondamentale del realismo politico?',answer:'Niccolò Machiavelli',opts:['Thomas More','Erasmo','Francis Bacon','Niccolò Machiavelli']},
+      {q:'La Prima Guerra Punica (264–241 a.C.) riguardava principalmente quale isola?',answer:'Sicilia',opts:['Sardegna','Corsica','Sicilia','Malta']},
+      {q:'Quale impero controllava la Via della Seta nel XIII–XIV secolo?',answer:'Impero Mongolo',opts:['Impero Ottomano','Dinastia Tang','Impero Mongolo','Impero Timurida']},
+      {q:'La Defenestrazione di Praga del 1618 scatenò quale grande conflitto europeo?',answer:'Guerra dei Trent\'Anni',opts:['Guerra dei Sette Anni','Guerra di Successione Spagnola','Guerra dei Trent\'Anni','Grande Guerra del Nord']},
+    ]
+  }
 };
 
-// ── SETTINGS PER DIFFICULTY ───────────────────────────────────────────────────
-var DIFF = {
-  easy:   { label: 'EASY',   time: 20, base: 100, bonus: 5  },
-  medium: { label: 'MEDIUM', time: 15, base: 150, bonus: 8  },
-  hard:   { label: 'HARD',   time: 10, base: 200, bonus: 12 }
-};
-
-var TOTAL = 10;
-var CIRC  = 119.38;
+// ── SETTINGS ──────────────────────────────────────────────────────────────────
+var DIFF = { easy:{time:20,base:100,bonus:5}, medium:{time:15,base:150,bonus:8}, hard:{time:10,base:200,bonus:12} };
+var TOTAL = 10, CIRC = 119.38;
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
+var currentLang = localStorage.getItem('historyLang') || 'en';
 var diff, pool, qIdx, score, correctCount, streak, bestStreak, times, answered;
 var timerInterval, timeLeft, startTime;
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
+// ── LANGUAGE ──────────────────────────────────────────────────────────────────
+function openLangModal() {
+  document.getElementById('lang-modal').classList.add('open');
+  ['en','ru','fr','de','it'].forEach(function(l) {
+    document.getElementById('lo-'+l).classList.toggle('selected', l === currentLang);
+  });
+}
+function closeLangModal() { document.getElementById('lang-modal').classList.remove('open'); }
+function setLang(l) {
+  currentLang = l;
+  localStorage.setItem('historyLang', l);
+  applyLang();
+  closeLangModal();
+  updateHomeHS();
+}
+function applyLang() {
+  var t = UI[currentLang];
+  document.getElementById('home-title').textContent  = t.title;
+  document.getElementById('home-sub').textContent    = t.sub;
+  document.getElementById('diff-label').textContent  = t.chooseDiff;
+  document.getElementById('lang-btn').textContent    = t.langBtn;
+  document.getElementById('modal-title').textContent = t.modalTitle;
+  document.getElementById('modal-close-btn').textContent = t.closeBtn;
+  document.getElementById('easy-name').textContent   = t.easy;
+  document.getElementById('med-name').textContent    = t.med;
+  document.getElementById('hard-name').textContent   = t.hard;
+  document.getElementById('easy-desc').textContent   = t.easyDesc;
+  document.getElementById('med-desc').textContent    = t.medDesc;
+  document.getElementById('hard-desc').textContent   = t.hardDesc;
+  document.getElementById('btn-again').textContent   = t.playAgain;
+  document.getElementById('btn-menu').textContent    = t.menu;
+  document.getElementById('lbl-correct').textContent = t.correct;
+  document.getElementById('lbl-speed').textContent   = t.avgSpeed;
+  document.getElementById('lbl-streak').textContent  = t.bestStreak;
+  document.getElementById('lbl-best').textContent    = t.highScore;
 }
 
-function goHome() {
-  clearInterval(timerInterval);
-  updateHomeHS();
-  show('home');
-}
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function show(id) { document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');}); document.getElementById(id).classList.add('active'); }
+function goHome() { clearInterval(timerInterval); updateHomeHS(); show('home'); }
 
 // ── HIGH SCORES ───────────────────────────────────────────────────────────────
-function getHS() {
-  try { return JSON.parse(localStorage.getItem('historyQuiz') || '{}'); } catch(e) { return {}; }
-}
-function saveHS(d, s) {
-  var hs = getHS();
-  if (!hs[d] || s > hs[d]) { hs[d] = s; localStorage.setItem('historyQuiz', JSON.stringify(hs)); }
-}
+function getHS() { try { return JSON.parse(localStorage.getItem('historyQuiz')||'{}'); } catch(e){ return {}; } }
+function saveHS(d,s) { var h=getHS(); if(!h[d]||s>h[d]){h[d]=s;localStorage.setItem('historyQuiz',JSON.stringify(h));} }
 function updateHomeHS() {
-  var hs = getHS();
-  document.getElementById('hs-easy').textContent   = hs.easy   != null ? hs.easy   : '—';
-  document.getElementById('hs-medium').textContent = hs.medium != null ? hs.medium : '—';
-  document.getElementById('hs-hard').textContent   = hs.hard   != null ? hs.hard   : '—';
+  var h=getHS(), t=UI[currentLang];
+  document.getElementById('hs-easy-pill').childNodes[0].textContent = t.easyPill + ' ';
+  document.getElementById('hs-med-pill').childNodes[0].textContent  = t.medPill  + ' ';
+  document.getElementById('hs-hard-pill').childNodes[0].textContent = t.hardPill + ' ';
+  document.getElementById('hs-easy').textContent   = h.easy   != null ? h.easy   : '—';
+  document.getElementById('hs-medium').textContent = h.medium != null ? h.medium : '—';
+  document.getElementById('hs-hard').textContent   = h.hard   != null ? h.hard   : '—';
 }
 
 // ── SHUFFLE ───────────────────────────────────────────────────────────────────
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-  }
-  return arr;
-}
+function shuffle(arr) { for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;} return arr; }
 
-// ── START GAME ────────────────────────────────────────────────────────────────
+// ── START ─────────────────────────────────────────────────────────────────────
 function startGame(d) {
-  diff         = d;
-  pool         = shuffle(DB[d].slice()).slice(0, TOTAL);
-  qIdx         = 0;
-  score        = 0;
-  correctCount = 0;
-  streak       = 0;
-  bestStreak   = 0;
-  times        = [];
-  answered     = false;
-
-  var tag = document.getElementById('diff-tag');
-  tag.textContent = DIFF[d].label;
-  tag.className   = 'diff-tag ' + d;
-
-  show('quiz');
-  loadQuestion();
+  diff=d; pool=shuffle(DB[currentLang][d].slice()).slice(0,TOTAL);
+  qIdx=0; score=0; correctCount=0; streak=0; bestStreak=0; times=[]; answered=false;
+  var tag=document.getElementById('diff-tag');
+  tag.textContent=UI[currentLang][d==='easy'?'easy':d==='medium'?'med':'hard'].toUpperCase();
+  tag.className='diff-tag '+d;
+  show('quiz'); loadQuestion();
 }
 
 // ── LOAD QUESTION ─────────────────────────────────────────────────────────────
 function loadQuestion() {
-  clearInterval(timerInterval);
-  answered = false;
-
-  var cfg = DIFF[diff];
-  var q   = pool[qIdx];
-
-  document.getElementById('q-counter').textContent     = 'Question ' + (qIdx + 1) + ' of ' + TOTAL;
-  document.getElementById('score-display').textContent = score;
-  document.getElementById('progress-fill').style.width = (qIdx / TOTAL * 100) + '%';
-  document.getElementById('question-text').textContent = q.q;
-
-  var opts = shuffle(q.opts.slice());
-  var grid = document.getElementById('opts-grid');
-  grid.innerHTML = '';
-  var letters = ['A', 'B', 'C', 'D'];
-  opts.forEach(function(opt, i) {
-    var btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.innerHTML = '<span class="letter-tag">' + letters[i] + '</span>' + escHtml(opt);
-    btn.dataset.opt = opt;
-    btn.onclick = function() { if (!answered) pick(opt, btn, q.answer); };
+  clearInterval(timerInterval); answered=false;
+  var q=pool[qIdx], t=UI[currentLang];
+  document.getElementById('q-counter').textContent = t.qOf.replace('{n}',qIdx+1).replace('{t}',TOTAL);
+  document.getElementById('score-display').textContent=score;
+  document.getElementById('progress-fill').style.width=(qIdx/TOTAL*100)+'%';
+  document.getElementById('question-text').textContent=q.q;
+  var opts=shuffle(q.opts.slice()), grid=document.getElementById('opts-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(l,i){
+    var btn=document.createElement('button'); btn.className='opt-btn';
+    btn.innerHTML='<span class="letter-tag">'+l+'</span>'+escHtml(opts[i]);
+    btn.dataset.opt=opts[i];
+    btn.onclick=function(){if(!answered)pick(opts[i],btn,q.answer);};
     grid.appendChild(btn);
   });
-
-  startTimer(cfg.time);
-  startTime = Date.now();
+  startTimer(DIFF[diff].time); startTime=Date.now();
 }
-
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── TIMER ─────────────────────────────────────────────────────────────────────
-function startTimer(total) {
-  timeLeft = total;
-  renderTimer(timeLeft, total);
-  timerInterval = setInterval(function() {
-    timeLeft -= 0.1;
-    if (timeLeft <= 0) {
-      timeLeft = 0;
-      renderTimer(0, total);
-      clearInterval(timerInterval);
-      onTimeout();
-    } else {
-      renderTimer(timeLeft, total);
-    }
-  }, 100);
+function startTimer(total){
+  timeLeft=total; renderTimer(timeLeft,total);
+  timerInterval=setInterval(function(){
+    timeLeft-=0.1;
+    if(timeLeft<=0){timeLeft=0;renderTimer(0,total);clearInterval(timerInterval);onTimeout();}
+    else renderTimer(timeLeft,total);
+  },100);
 }
-
-function renderTimer(left, total) {
-  var frac   = left / total;
-  var offset = CIRC * (1 - frac);
-  var ring   = document.getElementById('timer-ring');
-  var txt    = document.getElementById('timer-text');
-  ring.style.strokeDashoffset = offset;
-  ring.style.stroke = frac > 0.5 ? '#22c55e' : frac > 0.25 ? '#f59e0b' : '#ef4444';
-  txt.textContent = Math.ceil(left);
+function renderTimer(left,total){
+  var frac=left/total, offset=CIRC*(1-frac);
+  document.getElementById('timer-ring').style.strokeDashoffset=offset;
+  document.getElementById('timer-ring').style.stroke=frac>0.5?'#22c55e':frac>0.25?'#f59e0b':'#ef4444';
+  document.getElementById('timer-text').textContent=Math.ceil(left);
 }
-
-function onTimeout() {
-  if (answered) return;
-  answered = true;
-  streak   = 0;
-  times.push(DIFF[diff].time);
-  var q    = pool[qIdx];
-  document.querySelectorAll('.opt-btn').forEach(function(b) {
-    b.disabled = true;
-    if (b.dataset.opt === q.answer) b.classList.add('correct');
-    else b.classList.add('dimmed');
+function onTimeout(){
+  if(answered)return; answered=true; streak=0; times.push(DIFF[diff].time);
+  var q=pool[qIdx];
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.dataset.opt===q.answer)b.classList.add('correct'); else b.classList.add('dimmed');
   });
-  setTimeout(nextQuestion, 1200);
+  setTimeout(nextQuestion,1200);
 }
 
-// ── PICK ANSWER ───────────────────────────────────────────────────────────────
-function pick(opt, btn, correct) {
-  if (answered) return;
-  answered = true;
-  clearInterval(timerInterval);
-
-  var elapsed = (Date.now() - startTime) / 1000;
-  times.push(elapsed);
-
-  var allBtns = document.querySelectorAll('.opt-btn');
-  allBtns.forEach(function(b) { b.disabled = true; });
-
-  if (opt === correct) {
-    btn.classList.add('correct');
-    correctCount++;
-    streak++;
-    if (streak > bestStreak) bestStreak = streak;
-    var cfg = DIFF[diff];
-    var rem = Math.max(0, cfg.time - elapsed);
-    var pts = cfg.base + Math.round(rem * cfg.bonus);
-    score  += pts;
-    document.getElementById('score-display').textContent = score;
-    floatPoints('+' + pts, btn);
-    allBtns.forEach(function(b) { if (b !== btn) b.classList.add('dimmed'); });
+// ── PICK ──────────────────────────────────────────────────────────────────────
+function pick(opt,btn,correct){
+  if(answered)return; answered=true; clearInterval(timerInterval);
+  var elapsed=(Date.now()-startTime)/1000; times.push(elapsed);
+  document.querySelectorAll('.opt-btn').forEach(function(b){b.disabled=true;});
+  if(opt===correct){
+    btn.classList.add('correct'); correctCount++; streak++; if(streak>bestStreak)bestStreak=streak;
+    var rem=Math.max(0,DIFF[diff].time-elapsed), pts=DIFF[diff].base+Math.round(rem*DIFF[diff].bonus);
+    score+=pts; document.getElementById('score-display').textContent=score;
+    floatPoints('+'+pts,btn);
+    document.querySelectorAll('.opt-btn').forEach(function(b){if(b!==btn)b.classList.add('dimmed');});
   } else {
-    btn.classList.add('wrong');
-    streak = 0;
-    allBtns.forEach(function(b) {
-      if (b.dataset.opt === correct) b.classList.add('correct');
-      else if (b !== btn) b.classList.add('dimmed');
+    btn.classList.add('wrong'); streak=0;
+    document.querySelectorAll('.opt-btn').forEach(function(b){
+      if(b.dataset.opt===correct)b.classList.add('correct'); else if(b!==btn)b.classList.add('dimmed');
     });
   }
-
-  setTimeout(nextQuestion, 1100);
+  setTimeout(nextQuestion,1100);
 }
 
-// ── FLOAT POINTS ──────────────────────────────────────────────────────────────
-function floatPoints(text, el) {
-  var r   = el.getBoundingClientRect();
-  var div = document.createElement('div');
-  div.className   = 'float-pts';
-  div.textContent = text;
-  div.style.left  = (r.left + r.width / 2 - 30) + 'px';
-  div.style.top   = (r.top - 10) + 'px';
-  document.body.appendChild(div);
-  setTimeout(function() { div.remove(); }, 900);
+// ── FLOAT PTS ─────────────────────────────────────────────────────────────────
+function floatPoints(text,el){
+  var r=el.getBoundingClientRect(), div=document.createElement('div');
+  div.className='float-pts'; div.textContent=text;
+  div.style.left=(r.left+r.width/2-30)+'px'; div.style.top=(r.top-10)+'px';
+  document.body.appendChild(div); setTimeout(function(){div.remove();},900);
 }
 
-// ── NEXT QUESTION / RESULT ────────────────────────────────────────────────────
-function nextQuestion() {
-  qIdx++;
-  if (qIdx >= TOTAL) showResult();
-  else loadQuestion();
-}
-
-function showResult() {
-  clearInterval(timerInterval);
-  saveHS(diff, score);
-
-  var avgSpeed = times.length
-    ? (times.reduce(function(a,b){return a+b;},0) / times.length).toFixed(1)
-    : '—';
-  var hs = getHS()[diff] || 0;
-
-  var cfg    = DIFF[diff];
-  var maxPts = (cfg.base + cfg.bonus * cfg.time) * TOTAL;
-  var pct    = score / maxPts;
-
-  var grade;
-  if      (pct >= 0.8) grade = { msg: '🏆 Outstanding!',   col: '#f59e0b' };
-  else if (pct >= 0.6) grade = { msg: '🎉 Great job!',     col: '#22c55e' };
-  else if (pct >= 0.4) grade = { msg: '👍 Not bad!',       col: '#6c63ff' };
-  else if (pct >= 0.2) grade = { msg: '📚 Keep studying!', col: '#64748b' };
-  else                 grade = { msg: '💀 Rough one…',     col: '#ef4444' };
-
-  document.getElementById('result-score').textContent = score;
-  var gradeEl = document.getElementById('result-grade');
-  gradeEl.textContent = grade.msg;
-  gradeEl.style.color = grade.col;
-
-  document.getElementById('stat-correct').textContent = correctCount + '/' + TOTAL;
-  document.getElementById('stat-speed').textContent   = avgSpeed + 's';
-  document.getElementById('stat-streak').textContent  = bestStreak + (bestStreak > 0 ? ' 🔥' : '');
-  document.getElementById('stat-best').textContent    = hs;
-
+// ── NEXT / RESULT ─────────────────────────────────────────────────────────────
+function nextQuestion(){qIdx++;if(qIdx>=TOTAL)showResult();else loadQuestion();}
+function showResult(){
+  clearInterval(timerInterval); saveHS(diff,score);
+  var avgSpeed=times.length?(times.reduce(function(a,b){return a+b;},0)/times.length).toFixed(1):'—';
+  var hs=getHS()[diff]||0, cfg=DIFF[diff];
+  var pct=score/((cfg.base+cfg.bonus*cfg.time)*TOTAL);
+  var gs=UI[currentLang].grades;
+  var grade=pct>=0.8?{msg:gs[0],col:'#f59e0b'}:pct>=0.6?{msg:gs[1],col:'#22c55e'}:pct>=0.4?{msg:gs[2],col:'#6c63ff'}:pct>=0.2?{msg:gs[3],col:'#64748b'}:{msg:gs[4],col:'#ef4444'};
+  document.getElementById('result-score').textContent=score;
+  document.getElementById('result-grade').textContent=grade.msg;
+  document.getElementById('result-grade').style.color=grade.col;
+  document.getElementById('stat-correct').textContent=correctCount+'/'+TOTAL;
+  document.getElementById('stat-speed').textContent=avgSpeed+'s';
+  document.getElementById('stat-streak').textContent=bestStreak+(bestStreak>0?' 🔥':'');
+  document.getElementById('stat-best').textContent=hs;
   show('result');
 }
-
-// ── RESTART ───────────────────────────────────────────────────────────────────
-function restart() { startGame(diff); }
+function restart(){startGame(diff);}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-updateHomeHS();
+applyLang(); updateHomeHS();
 </script>
 </body>
 </html>
