@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>History Quiz</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #252836;
+    --accent: #6c63ff;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .screen { display: none; width: 100%; max-width: 700px; padding: 24px 16px; }
+  .screen.active { display: block; }
+
+  /* ── HOME ── */
+  .home-title {
+    font-size: clamp(38px, 9vw, 68px);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .home-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+  .diff-label {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .diff-btn {
+    border: 2px solid;
+    background: transparent;
+    border-radius: 14px;
+    padding: 28px 16px;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.15s;
+    text-align: center;
+    font-family: inherit;
+  }
+  .diff-btn:hover { transform: translateY(-4px); }
+  .diff-btn .diff-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+  .diff-btn .diff-name { font-size: 18px; font-weight: 700; display: block; }
+  .diff-btn .diff-desc { font-size: 12px; color: var(--muted); margin-top: 4px; display: block; }
+  .diff-btn.easy   { border-color: var(--green);  color: var(--green); }
+  .diff-btn.easy:hover   { background: rgba(34,197,94,0.1); }
+  .diff-btn.medium { border-color: var(--yellow); color: var(--yellow); }
+  .diff-btn.medium:hover { background: rgba(245,158,11,0.1); }
+  .diff-btn.hard   { border-color: var(--red);    color: var(--red); }
+  .diff-btn.hard:hover   { background: rgba(239,68,68,0.1); }
+  .hs-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .hs-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .hs-pill span { color: var(--text); font-weight: 600; }
+
+  /* ── QUIZ ── */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .quiz-meta { display: flex; flex-direction: column; }
+  .diff-tag {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .diff-tag.easy   { color: var(--green); }
+  .diff-tag.medium { color: var(--yellow); }
+  .diff-tag.hard   { color: var(--red); }
+  .quiz-counter { font-size: 14px; color: var(--muted); }
+  .score-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .timer-wrap { flex-shrink: 0; }
+  .timer-svg { display: block; }
+  .timer-ring { transition: stroke-dashoffset 0.1s linear, stroke 0.3s; }
+  .timer-text {
+    font-size: 12px;
+    font-weight: 700;
+    fill: var(--text);
+    dominant-baseline: central;
+    text-anchor: middle;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 32px 28px;
+    margin-bottom: 20px;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .question-text {
+    font-size: clamp(16px, 3.5vw, 22px);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .opts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .opt-btn {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 13px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s, transform 0.12s;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct  { border-color: var(--green); background: rgba(34,197,94,0.12); }
+  .opt-btn.wrong    { border-color: var(--red);   background: rgba(239,68,68,0.12); }
+  .opt-btn.dimmed   { opacity: 0.35; }
+  .letter-tag {
+    min-width: 28px; height: 28px;
+    background: var(--border);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .opt-btn.correct .letter-tag { background: var(--green); color: #000; }
+  .opt-btn.wrong   .letter-tag { background: var(--red);   color: #fff; }
+
+  /* floating points */
+  .float-pts {
+    position: fixed;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--yellow);
+    pointer-events: none;
+    animation: floatUp 0.85s ease-out forwards;
+    z-index: 999;
+  }
+  @keyframes floatUp {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-60px); }
+  }
+
+  /* ── RESULT ── */
+  .result-score {
+    text-align: center;
+    font-size: clamp(56px, 14vw, 96px);
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .result-grade {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .result-btns {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-main {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-main:hover { opacity: 0.82; }
+  .btn-ghost {
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-ghost:hover { opacity: 0.82; }
+
+  @media (max-width: 520px) {
+    .opts-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HOME ── -->
+<div id="home" class="screen active">
+  <div class="home-title">📜 History Quiz</div>
+  <div class="home-sub">Test your knowledge of world history</div>
+  <div class="diff-label">Choose difficulty</div>
+  <div class="diff-grid">
+    <button class="diff-btn easy"   onclick="startGame('easy')">
+      <span class="diff-icon">🟢</span>
+      <span class="diff-name">Easy</span>
+      <span class="diff-desc">20s · Familiar events</span>
+    </button>
+    <button class="diff-btn medium" onclick="startGame('medium')">
+      <span class="diff-icon">🟡</span>
+      <span class="diff-name">Medium</span>
+      <span class="diff-desc">15s · Deeper knowledge</span>
+    </button>
+    <button class="diff-btn hard"   onclick="startGame('hard')">
+      <span class="diff-icon">🔴</span>
+      <span class="diff-name">Hard</span>
+      <span class="diff-desc">10s · Expert level</span>
+    </button>
+  </div>
+  <div class="hs-row">
+    <div class="hs-pill">🟢 Easy best: <span id="hs-easy">—</span></div>
+    <div class="hs-pill">🟡 Medium best: <span id="hs-medium">—</span></div>
+    <div class="hs-pill">🔴 Hard best: <span id="hs-hard">—</span></div>
+  </div>
+</div>
+
+<!-- ── QUIZ ── -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-meta">
+      <div class="diff-tag" id="diff-tag">EASY</div>
+      <div class="quiz-counter" id="q-counter">Question 1 of 10</div>
+    </div>
+    <div class="score-pill">⭐ <span id="score-display">0</span></div>
+    <div class="timer-wrap">
+      <svg class="timer-svg" width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="19" fill="none" stroke="#252836" stroke-width="4"/>
+        <circle id="timer-ring" class="timer-ring" cx="24" cy="24" r="19"
+          fill="none" stroke="#22c55e" stroke-width="4"
+          stroke-linecap="round"
+          stroke-dasharray="119.38"
+          stroke-dashoffset="0"
+          transform="rotate(-90 24 24)"/>
+        <text id="timer-text" class="timer-text" x="24" y="24">20</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+  <div class="question-card">
+    <div class="question-text" id="question-text">Loading…</div>
+  </div>
+
+  <div class="opts-grid" id="opts-grid"></div>
+</div>
+
+<!-- ── RESULT ── -->
+<div id="result" class="screen">
+  <div class="result-score" id="result-score">0</div>
+  <div class="result-grade" id="result-grade"></div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-correct">0</div>
+      <div class="stat-lbl">Correct</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-speed">—</div>
+      <div class="stat-lbl">Avg speed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-streak">0</div>
+      <div class="stat-lbl">Best streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-best">—</div>
+      <div class="stat-lbl">High score</div>
+    </div>
+  </div>
+  <div class="result-btns">
+    <button class="btn-main" onclick="restart()">Play Again</button>
+    <button class="btn-ghost" onclick="goHome()">← Menu</button>
+  </div>
+</div>
+
+<script>
+// ── QUESTION BANK ─────────────────────────────────────────────────────────────
+var DB = {
+  easy: [
+    { q: 'Who was the first President of the United States?', answer: 'George Washington', opts: ['George Washington', 'Abraham Lincoln', 'Thomas Jefferson', 'John Adams'] },
+    { q: 'In which year did World War II end?', answer: '1945', opts: ['1943', '1944', '1945', '1946'] },
+    { q: 'Who was the first person to walk on the Moon?', answer: 'Neil Armstrong', opts: ['Buzz Aldrin', 'Neil Armstrong', 'Yuri Gagarin', 'John Glenn'] },
+    { q: 'Which empire built the Colosseum in Rome?', answer: 'Roman Empire', opts: ['Greek Empire', 'Ottoman Empire', 'Roman Empire', 'Byzantine Empire'] },
+    { q: 'In which year did Christopher Columbus first reach the Americas?', answer: '1492', opts: ['1488', '1492', '1498', '1502'] },
+    { q: 'Which country gifted the Statue of Liberty to the United States?', answer: 'France', opts: ['Britain', 'Spain', 'France', 'Italy'] },
+    { q: 'Who was the primary author of the Declaration of Independence?', answer: 'Thomas Jefferson', opts: ['Benjamin Franklin', 'John Adams', 'George Washington', 'Thomas Jefferson'] },
+    { q: 'What was the name of the first artificial Earth satellite?', answer: 'Sputnik 1', opts: ['Explorer 1', 'Vostok 1', 'Sputnik 1', 'Apollo 1'] },
+    { q: 'The Great Wall of China was primarily built to defend against which group?', answer: 'Mongols', opts: ['Huns', 'Mongols', 'Persians', 'Japanese'] },
+    { q: 'In which country did the Industrial Revolution begin?', answer: 'Britain', opts: ['France', 'Germany', 'Britain', 'United States'] },
+    { q: 'What year did the Berlin Wall fall?', answer: '1989', opts: ['1987', '1988', '1989', '1991'] },
+    { q: 'Who delivered the famous "I Have a Dream" speech in 1963?', answer: 'Martin Luther King Jr.', opts: ['Malcolm X', 'Martin Luther King Jr.', 'John Lewis', 'Thurgood Marshall'] },
+    { q: 'Which ancient civilization built the pyramids at Giza?', answer: 'Ancient Egyptians', opts: ['Sumerians', 'Ancient Egyptians', 'Phoenicians', 'Assyrians'] },
+    { q: 'In which year did the Titanic sink?', answer: '1912', opts: ['1910', '1911', '1912', '1914'] },
+    { q: 'Who was the leader of Nazi Germany during World War II?', answer: 'Adolf Hitler', opts: ['Heinrich Himmler', 'Joseph Goebbels', 'Hermann Göring', 'Adolf Hitler'] },
+  ],
+  medium: [
+    { q: 'The Magna Carta was signed in which year?', answer: '1215', opts: ['1066', '1189', '1215', '1265'] },
+    { q: 'Which battle in 1815 ended Napoleon\'s rule permanently?', answer: 'Battle of Waterloo', opts: ['Battle of Leipzig', 'Battle of Austerlitz', 'Battle of Trafalgar', 'Battle of Waterloo'] },
+    { q: 'The Meiji Restoration of 1868 modernised which country?', answer: 'Japan', opts: ['China', 'Korea', 'Japan', 'Vietnam'] },
+    { q: 'Who commanded Allied forces on D-Day in 1944?', answer: 'Dwight D. Eisenhower', opts: ['George Patton', 'Bernard Montgomery', 'Dwight D. Eisenhower', 'Omar Bradley'] },
+    { q: 'Which civilization built Machu Picchu?', answer: 'Inca', opts: ['Aztec', 'Maya', 'Inca', 'Olmec'] },
+    { q: 'The Spanish Armada was defeated in which year?', answer: '1588', opts: ['1571', '1581', '1588', '1600'] },
+    { q: 'Who was the first woman to win a Nobel Prize?', answer: 'Marie Curie', opts: ['Bertha von Suttner', 'Marie Curie', 'Grazia Deledda', 'Jane Addams'] },
+    { q: 'The Opium Wars were fought between China and which country?', answer: 'Britain', opts: ['France', 'Russia', 'Britain', 'United States'] },
+    { q: 'The Rwandan Genocide occurred in which year?', answer: '1994', opts: ['1990', '1992', '1994', '1996'] },
+    { q: 'Which document formally ended World War I?', answer: 'Treaty of Versailles', opts: ['Treaty of Brest-Litovsk', 'Treaty of Paris', 'Treaty of Versailles', 'Treaty of Locarno'] },
+    { q: 'Which Roman general crossed the Rubicon river in 49 BC?', answer: 'Julius Caesar', opts: ['Pompey', 'Mark Antony', 'Julius Caesar', 'Crassus'] },
+    { q: 'The Thirty Years\' War was primarily fought in which region?', answer: 'Central Europe', opts: ['France', 'Italy', 'Central Europe', 'Scandinavia'] },
+    { q: 'Which empire did Alexander the Great inherit from his father Philip II?', answer: 'Macedonian Empire', opts: ['Persian Empire', 'Athenian Empire', 'Macedonian Empire', 'Spartan League'] },
+    { q: 'The French Revolution began in which year?', answer: '1789', opts: ['1776', '1783', '1789', '1793'] },
+    { q: 'Who founded the Mongol Empire?', answer: 'Genghis Khan', opts: ['Kublai Khan', 'Timur', 'Genghis Khan', 'Ögedei Khan'] },
+  ],
+  hard: [
+    { q: 'The Battle of Adwa (1896) was a decisive African victory against colonialism by which nation?', answer: 'Ethiopia', opts: ['Sudan', 'Somalia', 'Ethiopia', 'Eritrea'] },
+    { q: 'Which Chinese dynasty built the first iteration of the Grand Canal?', answer: 'Sui dynasty', opts: ['Han dynasty', 'Tang dynasty', 'Sui dynasty', 'Ming dynasty'] },
+    { q: 'Who was Haiti\'s first ruler after the revolution that created the first Black republic?', answer: 'Jean-Jacques Dessalines', opts: ['Toussaint Louverture', 'Jean-Jacques Dessalines', 'Henri Christophe', 'Alexandre Pétion'] },
+    { q: 'The Peace of Augsburg (1555) established which religious principle?', answer: 'Cuius regio, eius religio', opts: ['Cujus regio, eius lingua', 'Cuius regio, eius religio', 'Rex non potest peccare', 'Fides et ratio'] },
+    { q: 'Which Byzantine emperor compiled the Corpus Juris Civilis?', answer: 'Justinian I', opts: ['Heraclius', 'Leo III', 'Justinian I', 'Basil II'] },
+    { q: 'The Zimmermann Telegram (1917) proposed a military alliance between Germany and which country?', answer: 'Mexico', opts: ['Austria-Hungary', 'Ottoman Empire', 'Mexico', 'Argentina'] },
+    { q: 'The Sykes-Picot Agreement (1916) secretly divided the Middle East between which two powers?', answer: 'Britain and France', opts: ['Britain and Russia', 'France and Russia', 'Britain and France', 'Britain and Italy'] },
+    { q: 'Which Spartan king led the defense at the Battle of Thermopylae (480 BC)?', answer: 'Leonidas I', opts: ['Cleomenes I', 'Agesilaus II', 'Leonidas I', 'Pausanias'] },
+    { q: 'The Scramble for Africa was formalised at which conference?', answer: 'Berlin Conference (1884–85)', opts: ['Congress of Vienna', 'Treaty of Tordesillas', 'Berlin Conference (1884–85)', 'Treaty of Utrecht'] },
+    { q: 'Which Indian emperor converted to Buddhism after the Kalinga War?', answer: 'Ashoka', opts: ['Chandragupta Maurya', 'Bindusara', 'Ashoka', 'Harsha'] },
+    { q: 'The 1683 Siege of Vienna halted the advance of which empire into Central Europe?', answer: 'Ottoman Empire', opts: ['Safavid Empire', 'Mughal Empire', 'Ottoman Empire', 'Russian Empire'] },
+    { q: 'Who authored "The Prince," the foundational text of political realism?', answer: 'Niccolò Machiavelli', opts: ['Thomas More', 'Erasmus', 'Francis Bacon', 'Niccolò Machiavelli'] },
+    { q: 'The First Punic War (264–241 BC) was primarily fought over which island?', answer: 'Sicily', opts: ['Sardinia', 'Corsica', 'Sicily', 'Malta'] },
+    { q: 'Which empire controlled the Silk Road during the 13th–14th centuries?', answer: 'Mongol Empire', opts: ['Ottoman Empire', 'Tang dynasty', 'Mongol Empire', 'Timurid Empire'] },
+    { q: 'The Defenestration of Prague in 1618 triggered which major European conflict?', answer: 'Thirty Years\' War', opts: ['Seven Years\' War', 'War of Spanish Succession', 'Thirty Years\' War', 'Northern War'] },
+  ]
+};
+
+// ── SETTINGS PER DIFFICULTY ───────────────────────────────────────────────────
+var DIFF = {
+  easy:   { label: 'EASY',   time: 20, base: 100, bonus: 5  },
+  medium: { label: 'MEDIUM', time: 15, base: 150, bonus: 8  },
+  hard:   { label: 'HARD',   time: 10, base: 200, bonus: 12 }
+};
+
+var TOTAL = 10;
+var CIRC  = 119.38;
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var diff, pool, qIdx, score, correctCount, streak, bestStreak, times, answered;
+var timerInterval, timeLeft, startTime;
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  clearInterval(timerInterval);
+  updateHomeHS();
+  show('home');
+}
+
+// ── HIGH SCORES ───────────────────────────────────────────────────────────────
+function getHS() {
+  try { return JSON.parse(localStorage.getItem('historyQuiz') || '{}'); } catch(e) { return {}; }
+}
+function saveHS(d, s) {
+  var hs = getHS();
+  if (!hs[d] || s > hs[d]) { hs[d] = s; localStorage.setItem('historyQuiz', JSON.stringify(hs)); }
+}
+function updateHomeHS() {
+  var hs = getHS();
+  document.getElementById('hs-easy').textContent   = hs.easy   != null ? hs.easy   : '—';
+  document.getElementById('hs-medium').textContent = hs.medium != null ? hs.medium : '—';
+  document.getElementById('hs-hard').textContent   = hs.hard   != null ? hs.hard   : '—';
+}
+
+// ── SHUFFLE ───────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+// ── START GAME ────────────────────────────────────────────────────────────────
+function startGame(d) {
+  diff         = d;
+  pool         = shuffle(DB[d].slice()).slice(0, TOTAL);
+  qIdx         = 0;
+  score        = 0;
+  correctCount = 0;
+  streak       = 0;
+  bestStreak   = 0;
+  times        = [];
+  answered     = false;
+
+  var tag = document.getElementById('diff-tag');
+  tag.textContent = DIFF[d].label;
+  tag.className   = 'diff-tag ' + d;
+
+  show('quiz');
+  loadQuestion();
+}
+
+// ── LOAD QUESTION ─────────────────────────────────────────────────────────────
+function loadQuestion() {
+  clearInterval(timerInterval);
+  answered = false;
+
+  var cfg = DIFF[diff];
+  var q   = pool[qIdx];
+
+  document.getElementById('q-counter').textContent     = 'Question ' + (qIdx + 1) + ' of ' + TOTAL;
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('progress-fill').style.width = (qIdx / TOTAL * 100) + '%';
+  document.getElementById('question-text').textContent = q.q;
+
+  var opts = shuffle(q.opts.slice());
+  var grid = document.getElementById('opts-grid');
+  grid.innerHTML = '';
+  var letters = ['A', 'B', 'C', 'D'];
+  opts.forEach(function(opt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="letter-tag">' + letters[i] + '</span>' + escHtml(opt);
+    btn.dataset.opt = opt;
+    btn.onclick = function() { if (!answered) pick(opt, btn, q.answer); };
+    grid.appendChild(btn);
+  });
+
+  startTimer(cfg.time);
+  startTime = Date.now();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────────────────
+function startTimer(total) {
+  timeLeft = total;
+  renderTimer(timeLeft, total);
+  timerInterval = setInterval(function() {
+    timeLeft -= 0.1;
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      renderTimer(0, total);
+      clearInterval(timerInterval);
+      onTimeout();
+    } else {
+      renderTimer(timeLeft, total);
+    }
+  }, 100);
+}
+
+function renderTimer(left, total) {
+  var frac   = left / total;
+  var offset = CIRC * (1 - frac);
+  var ring   = document.getElementById('timer-ring');
+  var txt    = document.getElementById('timer-text');
+  ring.style.strokeDashoffset = offset;
+  ring.style.stroke = frac > 0.5 ? '#22c55e' : frac > 0.25 ? '#f59e0b' : '#ef4444';
+  txt.textContent = Math.ceil(left);
+}
+
+function onTimeout() {
+  if (answered) return;
+  answered = true;
+  streak   = 0;
+  times.push(DIFF[diff].time);
+  var q    = pool[qIdx];
+  document.querySelectorAll('.opt-btn').forEach(function(b) {
+    b.disabled = true;
+    if (b.dataset.opt === q.answer) b.classList.add('correct');
+    else b.classList.add('dimmed');
+  });
+  setTimeout(nextQuestion, 1200);
+}
+
+// ── PICK ANSWER ───────────────────────────────────────────────────────────────
+function pick(opt, btn, correct) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  var elapsed = (Date.now() - startTime) / 1000;
+  times.push(elapsed);
+
+  var allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(function(b) { b.disabled = true; });
+
+  if (opt === correct) {
+    btn.classList.add('correct');
+    correctCount++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    var cfg = DIFF[diff];
+    var rem = Math.max(0, cfg.time - elapsed);
+    var pts = cfg.base + Math.round(rem * cfg.bonus);
+    score  += pts;
+    document.getElementById('score-display').textContent = score;
+    floatPoints('+' + pts, btn);
+    allBtns.forEach(function(b) { if (b !== btn) b.classList.add('dimmed'); });
+  } else {
+    btn.classList.add('wrong');
+    streak = 0;
+    allBtns.forEach(function(b) {
+      if (b.dataset.opt === correct) b.classList.add('correct');
+      else if (b !== btn) b.classList.add('dimmed');
+    });
+  }
+
+  setTimeout(nextQuestion, 1100);
+}
+
+// ── FLOAT POINTS ──────────────────────────────────────────────────────────────
+function floatPoints(text, el) {
+  var r   = el.getBoundingClientRect();
+  var div = document.createElement('div');
+  div.className   = 'float-pts';
+  div.textContent = text;
+  div.style.left  = (r.left + r.width / 2 - 30) + 'px';
+  div.style.top   = (r.top - 10) + 'px';
+  document.body.appendChild(div);
+  setTimeout(function() { div.remove(); }, 900);
+}
+
+// ── NEXT QUESTION / RESULT ────────────────────────────────────────────────────
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= TOTAL) showResult();
+  else loadQuestion();
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+  saveHS(diff, score);
+
+  var avgSpeed = times.length
+    ? (times.reduce(function(a,b){return a+b;},0) / times.length).toFixed(1)
+    : '—';
+  var hs = getHS()[diff] || 0;
+
+  var cfg    = DIFF[diff];
+  var maxPts = (cfg.base + cfg.bonus * cfg.time) * TOTAL;
+  var pct    = score / maxPts;
+
+  var grade;
+  if      (pct >= 0.8) grade = { msg: '🏆 Outstanding!',   col: '#f59e0b' };
+  else if (pct >= 0.6) grade = { msg: '🎉 Great job!',     col: '#22c55e' };
+  else if (pct >= 0.4) grade = { msg: '👍 Not bad!',       col: '#6c63ff' };
+  else if (pct >= 0.2) grade = { msg: '📚 Keep studying!', col: '#64748b' };
+  else                 grade = { msg: '💀 Rough one…',     col: '#ef4444' };
+
+  document.getElementById('result-score').textContent = score;
+  var gradeEl = document.getElementById('result-grade');
+  gradeEl.textContent = grade.msg;
+  gradeEl.style.color = grade.col;
+
+  document.getElementById('stat-correct').textContent = correctCount + '/' + TOTAL;
+  document.getElementById('stat-speed').textContent   = avgSpeed + 's';
+  document.getElementById('stat-streak').textContent  = bestStreak + (bestStreak > 0 ? ' 🔥' : '');
+  document.getElementById('stat-best').textContent    = hs;
+
+  show('result');
+}
+
+// ── RESTART ───────────────────────────────────────────────────────────────────
+function restart() { startGame(diff); }
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+updateHomeHS();
+</script>
+</body>
+</html>
