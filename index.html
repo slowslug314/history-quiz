@@ -94,11 +94,36 @@
   .btn-ghost { background: var(--card); color: var(--text); border: 2px solid var(--border); border-radius: 12px; padding: 13px 28px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
   .btn-ghost:hover { opacity: 0.82; }
 
+  /* MODE BUTTONS */
+  .mode-section { }
+  .mode-label { text-align: center; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .mode-btn { border: 3px solid; background: transparent; border-radius: 18px; padding: 36px 20px; cursor: pointer; transition: background 0.18s, transform 0.15s; text-align: center; font-family: inherit; }
+  .mode-btn:hover { transform: translateY(-5px); }
+  .mode-btn .mode-icon { font-size: 52px; display: block; margin-bottom: 12px; }
+  .mode-btn .mode-name { font-size: 22px; font-weight: 800; display: block; }
+  .mode-btn .mode-desc { font-size: 13px; color: var(--muted); margin-top: 6px; display: block; }
+  .mode-btn.kids   { border-color: #f59e0b; color: #f59e0b; }
+  .mode-btn.kids:hover   { background: rgba(245,158,11,0.12); }
+  .mode-btn.adults { border-color: var(--accent); color: var(--accent); }
+  .mode-btn.adults:hover { background: rgba(108,99,255,0.12); }
+  .diff-section { display: none; }
+  .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); font-family: inherit; font-size: 14px; cursor: pointer; margin-bottom: 18px; padding: 0; }
+  .back-btn:hover { color: var(--text); }
+
+  /* KIDS THEME */
+  body.kids-mode { --bg: #fef3c7; --card: #ffffff; --border: #fcd34d; --accent: #d97706; --green: #16a34a; --red: #dc2626; --yellow: #d97706; --text: #1c1917; --muted: #78716c; }
+  body.kids-mode .home-title { font-size: clamp(32px,8vw,58px); }
+  body.kids-mode .question-text { font-size: clamp(18px,4vw,26px); }
+  body.kids-mode .opt-btn { font-size: 16px; padding: 18px 20px; border-radius: 16px; }
+  body.kids-mode .diff-btn { border-radius: 20px; }
+
   @media (max-width: 520px) {
     .opts-grid { grid-template-columns: 1fr; }
     .stats-row { grid-template-columns: repeat(2,1fr); }
     .diff-grid { grid-template-columns: 1fr; }
     .lang-grid { grid-template-columns: 1fr; }
+    .mode-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -121,29 +146,49 @@
 
 <!-- HOME -->
 <div id="home" class="screen active">
-  <div class="home-topbar">
-    <button class="lang-btn" id="lang-btn" onclick="openLangModal()">🌐 Language</button>
-  </div>
   <div class="home-title" id="home-title">📜 History Quiz</div>
   <div class="home-sub" id="home-sub">Test your knowledge of world history</div>
-  <div class="diff-label" id="diff-label">Choose difficulty</div>
-  <div class="diff-grid">
-    <button class="diff-btn easy" onclick="startGame('easy')">
-      <span class="diff-icon">🟢</span>
-      <span class="diff-name" id="easy-name">Easy</span>
-      <span class="diff-desc" id="easy-desc">20s · Familiar events</span>
-    </button>
-    <button class="diff-btn medium" onclick="startGame('medium')">
-      <span class="diff-icon">🟡</span>
-      <span class="diff-name" id="med-name">Medium</span>
-      <span class="diff-desc" id="med-desc">15s · Deeper knowledge</span>
-    </button>
-    <button class="diff-btn hard" onclick="startGame('hard')">
-      <span class="diff-icon">🔴</span>
-      <span class="diff-name" id="hard-name">Hard</span>
-      <span class="diff-desc" id="hard-desc">10s · Expert level</span>
-    </button>
+
+  <!-- MODE SELECTION -->
+  <div id="mode-section" class="mode-section">
+    <div class="mode-label" id="mode-label">Who is playing?</div>
+    <div class="mode-grid">
+      <button class="mode-btn kids" onclick="selectMode('kids')">
+        <span class="mode-icon">🧒</span>
+        <span class="mode-name" id="kids-name">Kids</span>
+        <span class="mode-desc" id="kids-desc">Fun & easy questions</span>
+      </button>
+      <button class="mode-btn adults" onclick="selectMode('adults')">
+        <span class="mode-icon">👨</span>
+        <span class="mode-name" id="adults-name">Adults</span>
+        <span class="mode-desc" id="adults-desc">Choose your challenge</span>
+      </button>
+    </div>
   </div>
+
+  <!-- DIFFICULTY SELECTION (shown after Adults picks language) -->
+  <div id="diff-section" class="diff-section">
+    <button class="back-btn" onclick="showModeSection()">← <span id="back-label">Back</span></button>
+    <div class="diff-label" id="diff-label">Choose difficulty</div>
+    <div class="diff-grid">
+      <button class="diff-btn easy" onclick="startGame('easy')">
+        <span class="diff-icon">🟢</span>
+        <span class="diff-name" id="easy-name">Easy</span>
+        <span class="diff-desc" id="easy-desc">20s · Familiar events</span>
+      </button>
+      <button class="diff-btn medium" onclick="startGame('medium')">
+        <span class="diff-icon">🟡</span>
+        <span class="diff-name" id="med-name">Medium</span>
+        <span class="diff-desc" id="med-desc">15s · Deeper knowledge</span>
+      </button>
+      <button class="diff-btn hard" onclick="startGame('hard')">
+        <span class="diff-icon">🔴</span>
+        <span class="diff-name" id="hard-name">Hard</span>
+        <span class="diff-desc" id="hard-desc">10s · Expert level</span>
+      </button>
+    </div>
+  </div>
+
   <div class="hs-row">
     <div class="hs-pill" id="hs-easy-pill">🟢 Easy best: <span id="hs-easy">—</span></div>
     <div class="hs-pill" id="hs-med-pill">🟡 Medium best: <span id="hs-medium">—</span></div>
@@ -195,6 +240,8 @@
 var UI = {
   en: {
     title:'📜 History Quiz', sub:'Test your knowledge of world history',
+    whoPlaying:'Who is playing?', kidsName:'Kids', kidsDesc:'Fun & easy questions',
+    adultsName:'Adults', adultsDesc:'Choose your challenge', back:'Back',
     chooseDiff:'Choose difficulty', langBtn:'🌐 Language', modalTitle:'Choose Language', closeBtn:'Close',
     easy:'Easy', med:'Medium', hard:'Hard',
     easyDesc:'20s · Familiar events', medDesc:'15s · Deeper knowledge', hardDesc:'10s · Expert level',
@@ -206,6 +253,8 @@ var UI = {
   },
   ru: {
     title:'📜 История: Викторина', sub:'Проверь свои знания по истории мира',
+    whoPlaying:'Кто играет?', kidsName:'Дети', kidsDesc:'Весело и легко',
+    adultsName:'Взрослые', adultsDesc:'Выбери сложность', back:'Назад',
     chooseDiff:'Выбери сложность', langBtn:'🌐 Язык', modalTitle:'Выбери язык', closeBtn:'Закрыть',
     easy:'Лёгкий', med:'Средний', hard:'Сложный',
     easyDesc:'20с · Знакомые события', medDesc:'15с · Глубже в историю', hardDesc:'10с · Уровень эксперта',
@@ -217,6 +266,8 @@ var UI = {
   },
   fr: {
     title:'📜 Quiz d\'Histoire', sub:'Testez vos connaissances en histoire mondiale',
+    whoPlaying:'Qui joue ?', kidsName:'Enfants', kidsDesc:'Amusant et facile',
+    adultsName:'Adultes', adultsDesc:'Choisissez votre défi', back:'Retour',
     chooseDiff:'Choisissez la difficulté', langBtn:'🌐 Langue', modalTitle:'Choisir la langue', closeBtn:'Fermer',
     easy:'Facile', med:'Moyen', hard:'Difficile',
     easyDesc:'20s · Événements familiers', medDesc:'15s · Connaissance approfondie', hardDesc:'10s · Niveau expert',
@@ -228,6 +279,8 @@ var UI = {
   },
   de: {
     title:'📜 Geschichts-Quiz', sub:'Teste dein Wissen über Weltgeschichte',
+    whoPlaying:'Wer spielt?', kidsName:'Kinder', kidsDesc:'Spaß & einfach',
+    adultsName:'Erwachsene', adultsDesc:'Wähle deine Herausforderung', back:'Zurück',
     chooseDiff:'Schwierigkeit wählen', langBtn:'🌐 Sprache', modalTitle:'Sprache wählen', closeBtn:'Schließen',
     easy:'Einfach', med:'Mittel', hard:'Schwer',
     easyDesc:'20s · Bekannte Ereignisse', medDesc:'15s · Tieferes Wissen', hardDesc:'10s · Expertenebene',
@@ -239,6 +292,8 @@ var UI = {
   },
   it: {
     title:'📜 Quiz di Storia', sub:'Metti alla prova le tue conoscenze di storia mondiale',
+    whoPlaying:'Chi gioca?', kidsName:'Bambini', kidsDesc:'Divertente e facile',
+    adultsName:'Adulti', adultsDesc:'Scegli la tua sfida', back:'Indietro',
     chooseDiff:'Scegli la difficoltà', langBtn:'🌐 Lingua', modalTitle:'Scegli la lingua', closeBtn:'Chiudi',
     easy:'Facile', med:'Medio', hard:'Difficile',
     easyDesc:'20s · Eventi familiari', medDesc:'15s · Conoscenza approfondita', hardDesc:'10s · Livello esperto',
@@ -529,6 +584,8 @@ var TOTAL = 10, CIRC = 119.38;
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 var currentLang = localStorage.getItem('historyLang') || 'en';
+var currentMode = null;
+var pendingMode = null;
 var diff, pool, qIdx, score, correctCount, streak, bestStreak, times, answered;
 var timerInterval, timeLeft, startTime;
 
@@ -546,13 +603,41 @@ function setLang(l) {
   applyLang();
   closeLangModal();
   updateHomeHS();
+  if (pendingMode) {
+    currentMode = pendingMode;
+    pendingMode = null;
+    if (currentMode === 'kids') {
+      document.body.classList.add('kids-mode');
+      startGame('easy');
+    } else {
+      document.body.classList.remove('kids-mode');
+      showDiffSection();
+    }
+  }
+}
+function selectMode(mode) {
+  pendingMode = mode;
+  openLangModal();
+}
+function showDiffSection() {
+  document.getElementById('mode-section').style.display = 'none';
+  document.getElementById('diff-section').style.display = 'block';
+}
+function showModeSection() {
+  document.getElementById('mode-section').style.display = '';
+  document.getElementById('diff-section').style.display = 'none';
 }
 function applyLang() {
   var t = UI[currentLang];
   document.getElementById('home-title').textContent  = t.title;
   document.getElementById('home-sub').textContent    = t.sub;
+  document.getElementById('mode-label').textContent  = t.whoPlaying;
+  document.getElementById('kids-name').textContent   = t.kidsName;
+  document.getElementById('kids-desc').textContent   = t.kidsDesc;
+  document.getElementById('adults-name').textContent = t.adultsName;
+  document.getElementById('adults-desc').textContent = t.adultsDesc;
+  document.getElementById('back-label').textContent  = t.back;
   document.getElementById('diff-label').textContent  = t.chooseDiff;
-  document.getElementById('lang-btn').textContent    = t.langBtn;
   document.getElementById('modal-title').textContent = t.modalTitle;
   document.getElementById('modal-close-btn').textContent = t.closeBtn;
   document.getElementById('easy-name').textContent   = t.easy;
@@ -571,7 +656,14 @@ function applyLang() {
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function show(id) { document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');}); document.getElementById(id).classList.add('active'); }
-function goHome() { clearInterval(timerInterval); updateHomeHS(); show('home'); }
+function goHome() {
+  clearInterval(timerInterval);
+  currentMode = null;
+  document.body.classList.remove('kids-mode');
+  showModeSection();
+  updateHomeHS();
+  show('home');
+}
 
 // ── HIGH SCORES ───────────────────────────────────────────────────────────────
 function getHS() { try { return JSON.parse(localStorage.getItem('historyQuiz')||'{}'); } catch(e){ return {}; } }
@@ -591,6 +683,8 @@ function shuffle(arr) { for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.ra
 
 // ── START ─────────────────────────────────────────────────────────────────────
 function startGame(d) {
+  if (currentMode === 'kids') document.body.classList.add('kids-mode');
+  else document.body.classList.remove('kids-mode');
   diff=d; pool=shuffle(DB[currentLang][d].slice()).slice(0,TOTAL);
   qIdx=0; score=0; correctCount=0; streak=0; bestStreak=0; times=[]; answered=false;
   var tag=document.getElementById('diff-tag');
@@ -691,7 +785,10 @@ function showResult(){
   document.getElementById('stat-best').textContent=hs;
   show('result');
 }
-function restart(){startGame(diff);}
+function restart(){
+  if (currentMode === 'kids') { document.body.classList.add('kids-mode'); startGame('easy'); }
+  else startGame(diff);
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 applyLang(); updateHomeHS();
