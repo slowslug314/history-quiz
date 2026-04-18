@@ -170,6 +170,31 @@
     #ed-items-grid { grid-template-columns: repeat(3,1fr); }
     .ed-stage { width: 260px; height: 340px; }
   }
+
+  /* COINS */
+  .coin-bar { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:16px; background:linear-gradient(135deg,#1c1a10,#2a2310); border:2px solid #b8860b; border-radius:14px; padding:10px 22px; font-size:20px; font-weight:800; color:#fbbf24; }
+  .ed-coin-bar { display:flex; align-items:center; gap:6px; margin-left:auto; font-size:14px; font-weight:700; color:#fbbf24; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); border-radius:999px; padding:4px 12px; }
+
+  /* HOME AVATAR */
+  .home-avatar-section { display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 20px; background:var(--card); border:2px solid var(--border); border-radius:20px; cursor:pointer; transition:border-color 0.2s, transform 0.2s; }
+  .home-avatar-section:hover { border-color:var(--accent); transform:translateY(-2px); }
+  #home-avatar-wrap { width:80px; height:124px; flex-shrink:0; overflow:hidden; }
+  #home-avatar-wrap svg { width:80px; height:124px; }
+  .home-avatar-info { flex:1; }
+  .home-avatar-label { font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .home-avatar-cta { font-size:15px; font-weight:700; color:var(--accent); }
+
+  /* STORE / LOCK */
+  .ed-item.locked { position:relative; }
+  .ed-item.locked .item-lock { font-size:12px; }
+  .item-price { font-size:9px; color:#fbbf24; font-weight:800; margin-top:1px; }
+  .item-owned-badge { font-size:9px; color:var(--green); font-weight:700; margin-top:1px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(0); background:var(--card); border:2px solid var(--border); border-radius:14px; padding:12px 28px; font-size:14px; font-weight:600; z-index:9999; pointer-events:none; animation:toastIn 0.3s ease, toastOut 0.3s ease 1.8s forwards; white-space:nowrap; }
+  @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(16px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+  @keyframes toastOut { to{opacity:0;transform:translateX(-50%) translateY(10px)} }
+  .float-coin { position:fixed; font-size:15px; font-weight:800; color:#fbbf24; pointer-events:none; animation:floatUp 1.1s ease-out forwards; z-index:999; }
 </style>
 </head>
 <body>
@@ -239,6 +264,16 @@
     <div class="hs-pill" id="hs-med-pill">🟡 Medium best: <span id="hs-medium">—</span></div>
     <div class="hs-pill" id="hs-hard-pill">🔴 Hard best: <span id="hs-hard">—</span></div>
   </div>
+  <!-- HOME AVATAR PREVIEW -->
+  <div id="home-avatar-section" class="home-avatar-section" onclick="openEditor()" style="display:none">
+    <div id="home-avatar-wrap"></div>
+    <div class="home-avatar-info">
+      <div class="home-avatar-label" id="home-avatar-label">Your Avatar</div>
+      <div class="home-avatar-cta" id="home-avatar-cta">✏️ Customize</div>
+      <div class="coin-bar" style="margin-top:10px;margin-bottom:0;padding:7px 16px;font-size:16px;border-radius:10px">🪙 <span id="home-coin-count">0</span></div>
+    </div>
+  </div>
+
   <div class="studio-btn-wrap">
     <button class="btn-studio" id="btn-studio" onclick="openEditor()">🎨 Design Studio</button>
   </div>
@@ -288,6 +323,7 @@
   <div class="ed-header">
     <button class="ed-back" id="ed-back-btn" onclick="goHome()">← Home</button>
     <div class="ed-title">🎨 <span id="ed-title-text">Design Studio</span></div>
+    <div class="ed-coin-bar">🪙 <span id="ed-coin-count">0</span></div>
   </div>
 
   <div class="ed-stage">
@@ -626,32 +662,40 @@
         <ellipse cx="43" cy="91" rx="5.5" ry="8.5" fill="rgba(220,110,90,0.4)"/>
         <ellipse cx="137" cy="91" rx="5.5" ry="8.5" fill="rgba(220,110,90,0.4)"/>
 
+        <!-- Forehead highlight (3D volume) -->
+        <ellipse cx="80" cy="65" rx="20" ry="14" fill="rgba(255,255,255,0.13)"/>
+
         <!-- Eyebrows -->
-        <path d="M 66 73 Q 78 67 88 72" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M 92 72 Q 102 67 114 73" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 65 75 Q 76 69 87 73" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 93 73 Q 104 69 115 75" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
 
-        <!-- Eyes -->
-        <ellipse cx="78" cy="87" rx="10" ry="9" fill="white"/><ellipse cx="102" cy="87" rx="10" ry="9" fill="white"/>
-        <circle cx="79" cy="88" r="6.5" fill="#1d4ed8"/><circle cx="103" cy="88" r="6.5" fill="#1d4ed8"/>
-        <circle cx="79" cy="88" r="4" fill="#1e3a8a"/><circle cx="103" cy="88" r="4" fill="#1e3a8a"/>
-        <circle cx="80" cy="89" r="3" fill="#080808"/><circle cx="104" cy="89" r="3" fill="#080808"/>
-        <circle cx="82" cy="86" r="2.2" fill="white"/><circle cx="106" cy="86" r="2.2" fill="white"/>
-        <circle cx="83" cy="92" r="1" fill="rgba(255,255,255,0.5)"/><circle cx="107" cy="92" r="1" fill="rgba(255,255,255,0.5)"/>
-        <path d="M 68 81 Q 78 77 88 80" stroke="#2c1a08" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M 92 80 Q 102 77 112 81" stroke="#2c1a08" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Eyes — simplified to 4 elements each, no uncanny stacking -->
+        <ellipse cx="78" cy="88" rx="12" ry="11" fill="white"/>
+        <circle cx="78" cy="89" r="8" fill="#2563eb"/>
+        <circle cx="78" cy="89" r="5" fill="#1e3a8a"/>
+        <circle cx="82" cy="85" r="3.5" fill="white"/>
 
-        <!-- Nose -->
-        <path d="M 87 98 Q 83 107 90 110 Q 97 107 93 98" stroke="#d08878" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="87" cy="109" rx="3" ry="2" fill="rgba(175,95,80,0.28)"/>
-        <ellipse cx="93" cy="109" rx="3" ry="2" fill="rgba(175,95,80,0.28)"/>
+        <ellipse cx="102" cy="88" rx="12" ry="11" fill="white"/>
+        <circle cx="102" cy="89" r="8" fill="#2563eb"/>
+        <circle cx="102" cy="89" r="5" fill="#1e3a8a"/>
+        <circle cx="106" cy="85" r="3.5" fill="white"/>
 
-        <!-- Mouth -->
-        <path d="M 73 116 Q 90 132 107 116" stroke="#b02858" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M 78 120 Q 90 129 102 120" stroke="white" stroke-width="5.5" fill="none" stroke-linecap="round" opacity="0.65"/>
+        <!-- Upper eyelid shadow -->
+        <path d="M 66 83 Q 78 77 90 82" stroke="rgba(60,30,10,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M 90 82 Q 102 77 114 83" stroke="rgba(60,30,10,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- Nose — simple cute dot nose -->
+        <ellipse cx="86" cy="104" rx="4" ry="3" fill="rgba(180,90,70,0.32)"/>
+        <ellipse cx="94" cy="104" rx="4" ry="3" fill="rgba(180,90,70,0.32)"/>
+        <path d="M 86 100 Q 90 107 94 100" stroke="rgba(190,100,80,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Mouth — gentle smile, stays inside head (head bottom ≈ y 138) -->
+        <path d="M 76 114 Q 90 125 104 114" stroke="#c0406a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 80 117 Q 90 123 100 117" stroke="rgba(255,255,255,0.55)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
 
         <!-- Cheeks -->
-        <ellipse cx="60" cy="109" rx="13" ry="9" fill="rgba(255,100,100,0.2)"/>
-        <ellipse cx="120" cy="109" rx="13" ry="9" fill="rgba(255,100,100,0.2)"/>
+        <ellipse cx="59" cy="107" rx="13" ry="8" fill="rgba(255,110,110,0.22)"/>
+        <ellipse cx="121" cy="107" rx="13" ry="8" fill="rgba(255,110,110,0.22)"/>
 
         <!-- HAT LAYER -->
         <g id="hat-layer">
@@ -1322,6 +1366,8 @@ function goHome() {
   document.body.classList.remove('kids-mode');
   showModeSection();
   updateHomeHS();
+  updateCoinDisplay();
+  updateHomeAvatar();
   show('home');
 }
 
@@ -1355,7 +1401,7 @@ function startGame(d) {
   var combined=fresh.concat(used);
   pool=combined.slice(0,TOTAL);
   lastUsedQuestions[key]=pool.map(function(q){return q.q;});
-  qIdx=0; score=0; correctCount=0; streak=0; bestStreak=0; times=[]; answered=false;
+  qIdx=0; score=0; correctCount=0; streak=0; bestStreak=0; times=[]; answered=false; coinsThisGame=0;
   var tag=document.getElementById('diff-tag');
   tag.textContent=UI[currentLang][d==='easy'?'easy':d==='medium'?'med':'hard'].toUpperCase();
   tag.className='diff-tag '+d;
@@ -1418,6 +1464,9 @@ function pick(opt,btn,correct){
     var rem=Math.max(0,DIFF[diff].time-elapsed), pts=DIFF[diff].base+Math.round(rem*DIFF[diff].bonus);
     score+=pts; document.getElementById('score-display').textContent=score;
     floatPoints('+'+pts,btn);
+    var coinGain = diff==='easy'?5:diff==='medium'?10:20;
+    earnCoins(coinGain);
+    floatCoin('+🪙'+coinGain, btn);
     document.querySelectorAll('.opt-btn').forEach(function(b){if(b!==btn)b.classList.add('dimmed');});
   } else {
     btn.classList.add('wrong'); streak=0;
@@ -1434,6 +1483,12 @@ function floatPoints(text,el){
   div.className='float-pts'; div.textContent=text;
   div.style.left=(r.left+r.width/2-30)+'px'; div.style.top=(r.top-10)+'px';
   document.body.appendChild(div); setTimeout(function(){div.remove();},900);
+}
+function floatCoin(text,el){
+  var r=el.getBoundingClientRect(), div=document.createElement('div');
+  div.className='float-coin'; div.textContent=text;
+  div.style.left=(r.left+r.width/2+20)+'px'; div.style.top=(r.top-24)+'px';
+  document.body.appendChild(div); setTimeout(function(){div.remove();},1100);
 }
 
 // ── NEXT / RESULT ─────────────────────────────────────────────────────────────
@@ -1462,66 +1517,119 @@ function restart(){
 // ── DESIGN STUDIO ─────────────────────────────────────────────────────────────
 var ED = {
   backgrounds: [
-    {id:'beach',    n:'Beach',     bg:'linear-gradient(180deg,#87CEEB 52%,#f4d03f 52%)',    sc:['🌊','🌴','🦀','☀️','🐚','🌊']},
-    {id:'space',    n:'Space',     bg:'linear-gradient(135deg,#0d0221,#1a0a3a)',            sc:['⭐','🌟','✨','🌙','🚀','💫','⭐','✨']},
-    {id:'forest',   n:'Forest',    bg:'linear-gradient(180deg,#87CEEB 42%,#1a7a1a 42%)',   sc:['🌲','🦋','🍄','🌿','🐦','🌲']},
-    {id:'city',     n:'City',      bg:'linear-gradient(180deg,#0f0f2d 50%,#1a1a3a 50%)',   sc:['🏢','🌃','🚗','⭐','🌉','🏙️']},
-    {id:'rainbow',  n:'Rainbow',   bg:'linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1)',   sc:['🌈','☁️','✨','🌸','🦋','🌈']},
-    {id:'ocean',    n:'Ocean',     bg:'linear-gradient(180deg,#006994,#003d5c)',            sc:['🐠','🐟','🦈','🌊','🐙','🐋']},
-    {id:'winter',   n:'Winter',    bg:'linear-gradient(180deg,#d6eaf8 50%,#ecf0f1 50%)',   sc:['❄️','⛄','🌨️','🎿','🏔️','❄️']},
-    {id:'sunset',   n:'Sunset',    bg:'linear-gradient(180deg,#c0392b,#e67e22,#f1c40f)',   sc:['🌅','☁️','🦅','🌊','☁️']},
-    {id:'carnival', n:'Carnival',  bg:'linear-gradient(135deg,#e52d27,#b31217)',            sc:['🎪','🎡','🎠','🎭','🎈','🎊']},
-    {id:'night',    n:'Night Sky', bg:'linear-gradient(180deg,#0f0c29,#302b63)',            sc:['🌙','⭐','🌟','💫','✨','🌌','⭐']},
-    {id:'jungle',   n:'Jungle',    bg:'linear-gradient(180deg,#134e5e,#71b280)',            sc:['🦁','🐆','🌿','🦜','🌺','🦍']},
-    {id:'fantasy',  n:'Fantasy',   bg:'linear-gradient(135deg,#a18cd1,#fbc2eb)',            sc:['🦄','✨','🌸','💫','🌙','🔮']},
-    {id:'volcano',  n:'Volcano',   bg:'linear-gradient(180deg,#1a0000,#7f0000)',            sc:['🌋','🔥','💥','⚡','🔥','🌋']},
-    {id:'desert',   n:'Desert',    bg:'linear-gradient(180deg,#ff7e5f 42%,#c8956c 42%)',   sc:['🌵','🐪','☀️','🦂','🌅','🐍']},
-    {id:'underwater',n:'Deep Sea', bg:'linear-gradient(180deg,#003366,#001a33)',            sc:['🐙','🦑','🐡','✨','💎','🐠']},
-    {id:'candy',    n:'Candy Land',bg:'linear-gradient(135deg,#ff6b9d,#ffb347)',            sc:['🍭','🍬','🍰','🧁','🍫','🌈']},
+    {id:'beach',     n:'Beach',     bg:'linear-gradient(180deg,#87CEEB 52%,#f4d03f 52%)',    sc:['🌊','🌴','🦀','☀️','🐚','🌊'],     price:0},
+    {id:'space',     n:'Space',     bg:'linear-gradient(135deg,#0d0221,#1a0a3a)',            sc:['⭐','🌟','✨','🌙','🚀','💫','⭐','✨'],price:0},
+    {id:'forest',    n:'Forest',    bg:'linear-gradient(180deg,#87CEEB 42%,#1a7a1a 42%)',   sc:['🌲','🦋','🍄','🌿','🐦','🌲'],     price:50},
+    {id:'city',      n:'City',      bg:'linear-gradient(180deg,#0f0f2d 50%,#1a1a3a 50%)',   sc:['🏢','🌃','🚗','⭐','🌉','🏙️'],     price:100},
+    {id:'rainbow',   n:'Rainbow',   bg:'linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1)',   sc:['🌈','☁️','✨','🌸','🦋','🌈'],     price:75},
+    {id:'ocean',     n:'Ocean',     bg:'linear-gradient(180deg,#006994,#003d5c)',            sc:['🐠','🐟','🦈','🌊','🐙','🐋'],     price:100},
+    {id:'winter',    n:'Winter',    bg:'linear-gradient(180deg,#d6eaf8 50%,#ecf0f1 50%)',   sc:['❄️','⛄','🌨️','🎿','🏔️','❄️'],     price:75},
+    {id:'sunset',    n:'Sunset',    bg:'linear-gradient(180deg,#c0392b,#e67e22,#f1c40f)',   sc:['🌅','☁️','🦅','🌊','☁️'],          price:100},
+    {id:'carnival',  n:'Carnival',  bg:'linear-gradient(135deg,#e52d27,#b31217)',            sc:['🎪','🎡','🎠','🎭','🎈','🎊'],     price:200},
+    {id:'night',     n:'Night Sky', bg:'linear-gradient(180deg,#0f0c29,#302b63)',            sc:['🌙','⭐','🌟','💫','✨','🌌','⭐'], price:150},
+    {id:'jungle',    n:'Jungle',    bg:'linear-gradient(180deg,#134e5e,#71b280)',            sc:['🦁','🐆','🌿','🦜','🌺','🦍'],     price:100},
+    {id:'fantasy',   n:'Fantasy',   bg:'linear-gradient(135deg,#a18cd1,#fbc2eb)',            sc:['🦄','✨','🌸','💫','🌙','🔮'],     price:200},
+    {id:'volcano',   n:'Volcano',   bg:'linear-gradient(180deg,#1a0000,#7f0000)',            sc:['🌋','🔥','💥','⚡','🔥','🌋'],     price:150},
+    {id:'desert',    n:'Desert',    bg:'linear-gradient(180deg,#ff7e5f 42%,#c8956c 42%)',   sc:['🌵','🐪','☀️','🦂','🌅','🐍'],     price:75},
+    {id:'underwater',n:'Deep Sea',  bg:'linear-gradient(180deg,#003366,#001a33)',            sc:['🐙','🦑','🐡','✨','💎','🐠'],     price:200},
+    {id:'candy',     n:'Candy Land',bg:'linear-gradient(135deg,#ff6b9d,#ffb347)',            sc:['🍭','🍬','🍰','🧁','🍫','🌈'],     price:150},
   ],
   hats: [
-    {id:'none',     n:'None',          e:''},
-    {id:'crown',    n:'Crown',         e:'👑'},
-    {id:'tophat',   n:'Top Hat',       e:'🎩'},
-    {id:'cap',      n:'Cap',           e:'🧢'},
-    {id:'grad',     n:'Grad Cap',      e:'🎓'},
-    {id:'wizard',   n:'Wizard',        e:'🪄'},
-    {id:'cowboy',   n:'Cowboy',        e:'🤠'},
-    {id:'santa',    n:'Santa',         e:'🎅'},
-    {id:'helmet',   n:'Helmet',        e:'⛑️'},
-    {id:'party',    n:'Party',         e:'🎊'},
-    {id:'flower',   n:'Flower Crown',  e:'🌸'},
-    {id:'pirate',   n:'Pirate',        e:'☠️'},
-    {id:'knight',   n:'Knight',        e:'🪖'},
-    {id:'mushroom', n:'Mushroom',      e:'🍄'},
-    {id:'brain',    n:'Thinking',      e:'🧠'},
-    {id:'rainbow',  n:'Rainbow',       e:'🌈'},
+    {id:'none',    n:'None',         e:'',   price:0},
+    {id:'cap',     n:'Cap',          e:'🧢', price:50},
+    {id:'party',   n:'Party',        e:'🎊', price:50},
+    {id:'helmet',  n:'Helmet',       e:'⛑️', price:75},
+    {id:'flower',  n:'Flowers',      e:'🌸', price:75},
+    {id:'tophat',  n:'Top Hat',      e:'🎩', price:100},
+    {id:'cowboy',  n:'Cowboy',       e:'🤠', price:100},
+    {id:'mushroom',n:'Mushroom',     e:'🍄', price:100},
+    {id:'santa',   n:'Santa',        e:'🎅', price:150},
+    {id:'pirate',  n:'Pirate',       e:'☠️', price:150},
+    {id:'grad',    n:'Grad Cap',     e:'🎓', price:150},
+    {id:'rainbow', n:'Rainbow',      e:'🌈', price:200},
+    {id:'brain',   n:'Brain',        e:'🧠', price:200},
+    {id:'wizard',  n:'Wizard',       e:'🪄', price:300},
+    {id:'knight',  n:'Knight',       e:'🪖', price:300},
+    {id:'crown',   n:'Crown',        e:'👑', price:500},
   ],
   clothes: [
-    {id:'none',      n:'None',      c0:'#c8a882',c1:'#a07850', e:'👤'},
-    {id:'tshirt',    n:'T-Shirt',   c0:'#60a5fa',c1:'#1d4ed8', e:'👕'},
-    {id:'suit',      n:'Suit',      c0:'#4b5563',c1:'#111827', e:'👔'},
-    {id:'dress',     n:'Dress',     c0:'#f472b6',c1:'#be185d', e:'👗'},
-    {id:'hoodie',    n:'Hoodie',    c0:'#a78bfa',c1:'#6d28d9', e:'🧥'},
-    {id:'tuxedo',    n:'Tuxedo',    c0:'#1f2937',c1:'#030712', e:'🤵'},
-    {id:'kimono',    n:'Kimono',    c0:'#f87171',c1:'#991b1b', e:'👘'},
-    {id:'karate',    n:'Karate',    c0:'#f1f5f9',c1:'#cbd5e1', e:'🥋'},
-    {id:'hero',      n:'Superhero', c0:'#f87171',c1:'#7f1d1d', e:'🦸'},
-    {id:'princess',  n:'Princess',  c0:'#fbcfe8',c1:'#db2777', e:'👸'},
-    {id:'astronaut', n:'Astronaut', c0:'#e2e8f0',c1:'#94a3b8', e:'🚀'},
-    {id:'armor',     n:'Armor',     c0:'#cbd5e1',c1:'#475569', e:'⚔️'},
-    {id:'rainbow',   n:'Rainbow',   c0:'#a78bfa',c1:'#7c3aed', e:'🌈'},
-    {id:'sport',     n:'Sport',     c0:'#4ade80',c1:'#15803d', e:'⚽'},
-    {id:'pirate',    n:'Pirate',    c0:'#7c3aed',c1:'#1e0f38', e:'🏴‍☠️'},
-    {id:'scientist', n:'Scientist', c0:'#f8fafc',c1:'#cbd5e1', e:'🔬'},
+    {id:'none',      n:'None',      c0:'#c8a882',c1:'#a07850', e:'👤', price:0},
+    {id:'tshirt',    n:'T-Shirt',   c0:'#60a5fa',c1:'#1d4ed8', e:'👕', price:0},
+    {id:'sport',     n:'Sport',     c0:'#4ade80',c1:'#15803d', e:'⚽', price:50},
+    {id:'hoodie',    n:'Hoodie',    c0:'#a78bfa',c1:'#6d28d9', e:'🧥', price:50},
+    {id:'dress',     n:'Dress',     c0:'#f472b6',c1:'#be185d', e:'👗', price:75},
+    {id:'karate',    n:'Karate',    c0:'#f1f5f9',c1:'#cbd5e1', e:'🥋', price:100},
+    {id:'suit',      n:'Suit',      c0:'#4b5563',c1:'#111827', e:'👔', price:100},
+    {id:'scientist', n:'Scientist', c0:'#f8fafc',c1:'#cbd5e1', e:'🔬', price:100},
+    {id:'kimono',    n:'Kimono',    c0:'#f87171',c1:'#991b1b', e:'👘', price:150},
+    {id:'pirate',    n:'Pirate',    c0:'#7c3aed',c1:'#1e0f38', e:'🏴‍☠️', price:150},
+    {id:'princess',  n:'Princess',  c0:'#fbcfe8',c1:'#db2777', e:'👸', price:150},
+    {id:'hero',      n:'Superhero', c0:'#f87171',c1:'#7f1d1d', e:'🦸', price:200},
+    {id:'rainbow',   n:'Rainbow',   c0:'#a78bfa',c1:'#7c3aed', e:'🌈', price:200},
+    {id:'armor',     n:'Armor',     c0:'#cbd5e1',c1:'#475569', e:'⚔️', price:300},
+    {id:'tuxedo',    n:'Tuxedo',    c0:'#1f2937',c1:'#030712', e:'🤵', price:200},
+    {id:'astronaut', n:'Astronaut', c0:'#e2e8f0',c1:'#94a3b8', e:'🚀', price:300},
   ]
 };
 
 var edState = {bg:'beach', hat:'none', clothes:'none', tab:'backgrounds'};
+var coins = parseInt(localStorage.getItem('historyCoins') || '0');
+var ownedItems = JSON.parse(localStorage.getItem('historyOwned') || '{}');
+var FREE_IDS = ['beach','space','none','tshirt'];
+var coinsThisGame = 0;
+
+function isOwned(id) { return FREE_IDS.indexOf(id) >= 0 || ownedItems[id] === true; }
+
+function earnCoins(n) {
+  coins += n; coinsThisGame += n;
+  localStorage.setItem('historyCoins', coins);
+  updateCoinDisplay();
+}
+
+function updateCoinDisplay() {
+  ['home-coin-count','ed-coin-count'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.textContent = coins;
+  });
+}
+
+function showToast(msg) {
+  var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2200);
+}
+
+function tryBuy(id, price, key) {
+  if (isOwned(id)) { edSelect(key, id); return; }
+  if (coins < price) { showToast('🪙 Need ' + price + ' coins — keep playing!'); return; }
+  if (!confirm('Buy for 🪙 ' + price + ' coins?')) return;
+  coins -= price;
+  localStorage.setItem('historyCoins', coins);
+  ownedItems[id] = true;
+  localStorage.setItem('historyOwned', JSON.stringify(ownedItems));
+  updateCoinDisplay();
+  edSelect(key, id);
+  showToast('✅ Unlocked!');
+}
+
+function updateHomeAvatar() {
+  var wrap = document.getElementById('home-avatar-wrap');
+  var sec = document.getElementById('home-avatar-section');
+  if (!wrap) return;
+  sec.style.display = 'flex';
+  var src = document.getElementById('ed-char-svg');
+  var html = src.outerHTML;
+  html = html.replace(/\bid="([^"]+)"/g, 'id="hav-$1"');
+  html = html.replace(/url\(#([^)]+)\)/g, 'url(#hav-$1)');
+  html = html.replace(/filter="url\(#hav-(ds|hs)\)"/g, 'filter="url(#hav-$1)"');
+  html = html.replace('width="260"', 'width="80"');
+  html = html.replace('viewBox="0 0 180 280"', 'viewBox="22 30 136 200"');
+  wrap.innerHTML = html;
+}
 
 function openEditor() {
   edSetTab('backgrounds');
   applyEditorState();
+  updateCoinDisplay();
   show('editor');
 }
 
@@ -1569,24 +1677,31 @@ function renderEditorItems() {
   var items = tab==='backgrounds' ? ED.backgrounds : tab==='hats' ? ED.hats : ED.clothes;
   var key   = tab==='backgrounds' ? 'bg' : tab==='hats' ? 'hat' : 'clothes';
   document.getElementById('ed-items-grid').innerHTML = items.map(function(item){
-    var sel = edState[key]===item.id ? ' selected' : '';
+    var owned = isOwned(item.id);
+    var sel = (edState[key]===item.id) ? ' selected' : '';
+    var lockedCls = (!owned) ? ' locked' : '';
     var preview;
     if (tab === 'backgrounds') {
       var sc2 = item.sc ? item.sc.slice(0,2).join('') : '';
-      preview = '<div class="item-bg-prev" style="background:'+item.bg+'">'+sc2+'</div>';
+      preview = '<div class="item-bg-prev" style="background:'+item.bg+'">'+(owned?sc2:'🔒')+'</div>';
     } else if (tab === 'clothes') {
-      var swatch = '<div style="width:42px;height:32px;border-radius:8px;background:linear-gradient(135deg,'+item.c0+','+item.c1+');display:flex;align-items:center;justify-content:center;font-size:18px">'+item.e+'</div>';
-      preview = swatch;
+      preview = '<div style="width:42px;height:32px;border-radius:8px;background:linear-gradient(135deg,'+item.c0+','+item.c1+');display:flex;align-items:center;justify-content:center;font-size:'+(owned?'18':'14')+'px">'+(owned?item.e:'🔒')+'</div>';
     } else {
-      preview = '<div class="item-emoji">'+(item.e||'✨')+'</div>';
+      preview = '<div class="item-emoji">'+(owned?(item.e||'✨'):'🔒')+'</div>';
     }
-    return '<button class="ed-item'+sel+'" onclick="edSelect(\''+key+'\',\''+item.id+'\')">'
-      +preview+'<span class="item-name">'+item.n+'</span></button>';
+    var badge = owned
+      ? (item.price===0 ? '<span class="item-owned-badge">FREE</span>' : '<span class="item-owned-badge">✓</span>')
+      : '<span class="item-price">🪙'+item.price+'</span>';
+    var onclick = owned
+      ? 'edSelect(\''+key+'\',\''+item.id+'\')'
+      : 'tryBuy(\''+item.id+'\','+item.price+',\''+key+'\')';
+    return '<button class="ed-item'+sel+lockedCls+'" onclick="'+onclick+'">'
+      +preview+'<span class="item-name">'+item.n+'</span>'+badge+'</button>';
   }).join('');
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-applyLang(); updateHomeHS();
+applyLang(); updateHomeHS(); updateCoinDisplay(); updateHomeAvatar();
 </script>
 </body>
 </html>
