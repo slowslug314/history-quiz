@@ -137,7 +137,7 @@
   .ed-title { font-size: 22px; font-weight: 800; }
 
   .ed-stage { width: 300px; height: 400px; border-radius: 24px; position: relative; overflow: hidden; margin: 0 auto 20px; border: 3px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.5); cursor: default; perspective: 1000px; }
-  #ed-char-svg { display: block; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.55)); transform: rotateX(2deg); transform-origin: center bottom; transition: filter 0.3s; }
+  #ed-char-svg { display: block; filter: drop-shadow(0 14px 28px rgba(0,0,0,0.5)); transform: rotateX(6deg); transform-origin: center bottom; transition: filter 0.3s; }
   .char-bounce { animation: charBounce 0.45s cubic-bezier(.36,.07,.19,.97) both; }
   .ed-stage-bg { position: absolute; inset: 0; background: linear-gradient(180deg,#87CEEB 55%,#f4d03f 55%); transition: background 0.45s; }
   .ed-scatter { position: absolute; inset: 0; display: flex; flex-wrap: wrap; align-items: flex-start; padding: 10px 8px; gap: 5px; font-size: 22px; pointer-events: none; z-index: 1; }
@@ -146,11 +146,10 @@
   .ed-scatter span:nth-child(3n) { animation-delay: -2.2s; }
   @keyframes scatterBob { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-7px) rotate(6deg)} }
   .ed-char-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; }
-  #ed-char-svg { display: block; }
-  @keyframes charBounce { 0%,100%{transform:rotateX(2deg) scale(1)} 25%{transform:rotateX(2deg) scale(1.06,-0.94) translateY(5px)} 60%{transform:rotateX(2deg) scale(.96,1.06) translateY(-8px)} }
+  @keyframes charBounce { 0%,100%{transform:rotateX(6deg) scale(1)} 25%{transform:rotateX(6deg) scale(1.06,.94) translateY(5px)} 60%{transform:rotateX(6deg) scale(.96,1.06) translateY(-8px)} }
 
-  .ed-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-  .ed-tab { flex: 1; padding: 10px 6px; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--muted); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .ed-tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
+  .ed-tab { padding: 9px 4px; background: var(--card); border: 2px solid var(--border); border-radius: 10px; color: var(--muted); font-family: inherit; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.15s; line-height:1; }
   .ed-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.1); }
   .ed-tab:hover:not(.active) { border-color: var(--text); color: var(--text); }
 
@@ -332,12 +331,12 @@
     <div class="ed-char-container">
       <svg id="ed-char-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 280" width="260">
         <defs>
-          <radialGradient id="rg-skin" cx="36%" cy="28%" r="68%"><stop offset="0%" stop-color="#fecdc4"/><stop offset="70%" stop-color="#f9a890"/><stop offset="100%" stop-color="#e07a62"/></radialGradient>
+          <radialGradient id="rg-skin" cx="36%" cy="28%" r="68%"><stop id="rgs0" offset="0%" stop-color="#fde8d8"/><stop id="rgs1" offset="70%" stop-color="#e8a880"/><stop id="rgs2" offset="100%" stop-color="#c87050"/></radialGradient>
           <linearGradient id="lg-body" x1="0.05" y1="0" x2="0.95" y2="1"><stop id="blg0" offset="0%" stop-color="#60a5fa"/><stop id="blg1" offset="100%" stop-color="#1d4ed8"/></linearGradient>
           <linearGradient id="lg-arm" x1="0" y1="0" x2="1" y2="1"><stop id="alg0" offset="0%" stop-color="#60a5fa"/><stop id="alg1" offset="100%" stop-color="#1d4ed8"/></linearGradient>
-          <linearGradient id="lg-pants" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient>
+          <linearGradient id="lg-pants" x1="0.1" y1="0" x2="0.9" y2="1"><stop id="plg0" offset="0%" stop-color="#3b82f6"/><stop id="plg1" offset="100%" stop-color="#1e3a8a"/></linearGradient>
           <radialGradient id="rg-shoe" cx="26%" cy="22%" r="72%"><stop offset="0%" stop-color="#3d3d3d"/><stop offset="100%" stop-color="#080808"/></radialGradient>
-          <radialGradient id="rg-hair" cx="50%" cy="22%" r="75%"><stop offset="0%" stop-color="#6b3a1a"/><stop offset="100%" stop-color="#1a0804"/></radialGradient>
+          <radialGradient id="rg-hair" cx="50%" cy="22%" r="75%"><stop id="rgh0" offset="0%" stop-color="#6b3a1a"/><stop id="rgh1" offset="100%" stop-color="#1a0804"/></radialGradient>
           <linearGradient id="lg-gold" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#FFE566"/><stop offset="50%" stop-color="#FFD700"/><stop offset="100%" stop-color="#B8860B"/></linearGradient>
           <radialGradient id="rg-gemR" cx="28%" cy="28%" r="72%"><stop offset="0%" stop-color="#ff7b7b"/><stop offset="100%" stop-color="#8B0000"/></radialGradient>
           <radialGradient id="rg-gemB" cx="28%" cy="28%" r="72%"><stop offset="0%" stop-color="#7ab8ff"/><stop offset="100%" stop-color="#00008B"/></radialGradient>
@@ -644,58 +643,63 @@
         <line x1="172" y1="143" x2="172" y2="151" stroke="rgba(180,90,70,0.45)" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="167" y1="142" x2="167" y2="152" stroke="rgba(180,90,70,0.45)" stroke-width="1.5" stroke-linecap="round"/>
 
-        <!-- Neck -->
-        <rect x="80" y="118" width="20" height="16" rx="5" fill="url(#rg-skin)"/>
+        <!-- Neck (3D) -->
+        <rect x="82" y="119" width="16" height="15" rx="5" fill="url(#rg-skin)"/>
+        <rect x="96" y="121" width="6" height="11" rx="3" fill="rgba(0,0,0,0.18)"/>
 
-        <!-- Head -->
-        <circle cx="90" cy="91" r="47" fill="url(#rg-skin)" filter="url(#ds)"/>
-        <ellipse cx="128" cy="97" rx="16" ry="30" fill="rgba(150,55,35,0.14)"/>
-        <ellipse cx="52" cy="97" rx="14" ry="28" fill="rgba(150,55,35,0.07)"/>
+        <!-- ── 3D BLOCK HEAD: three visible faces like a real 3D cube ── -->
+        <!-- Right side face (darker — depth) -->
+        <path id="head-side" d="M 125 46 L 131 40 L 131 120 L 125 124 Z" fill="#b86840"/>
+        <!-- Top face (lighter — volume) -->
+        <path id="head-top" d="M 57 46 L 125 46 L 131 40 L 63 40 Z" fill="#fef0e4"/>
+        <!-- Front face (skin gradient + drop shadow) -->
+        <rect x="57" y="46" width="68" height="78" rx="8" fill="url(#rg-skin)" filter="url(#ds)"/>
+        <!-- Specular highlight (light from top-left) -->
+        <rect x="62" y="51" width="24" height="20" rx="6" fill="rgba(255,255,255,0.2)"/>
+        <!-- Right-edge ambient shadow on front face -->
+        <rect x="114" y="54" width="9" height="64" rx="4" fill="rgba(0,0,0,0.07)"/>
 
-        <!-- Hair -->
-        <path d="M 46 76 Q 90 37 134 76 Q 130 47 90 42 Q 50 47 46 76Z" fill="url(#rg-hair)"/>
-        <path d="M 64 56 Q 80 48 104 53" stroke="rgba(255,255,255,0.18)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Hair (sweeps above head top y≈40) -->
+        <path d="M 59 60 Q 91 24 123 60 Q 117 32 91 28 Q 65 32 59 60Z" fill="url(#rg-hair)"/>
+        <path d="M 72 38 Q 91 30 110 36" stroke="rgba(255,255,255,0.24)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
 
-        <!-- Ears -->
-        <ellipse cx="43" cy="91" rx="10" ry="13" fill="url(#rg-skin)" stroke="#e08870" stroke-width="1.5"/>
-        <ellipse cx="137" cy="91" rx="10" ry="13" fill="url(#rg-skin)" stroke="#e08870" stroke-width="1.5"/>
-        <ellipse cx="43" cy="91" rx="5.5" ry="8.5" fill="rgba(220,110,90,0.4)"/>
-        <ellipse cx="137" cy="91" rx="5.5" ry="8.5" fill="rgba(220,110,90,0.4)"/>
-
-        <!-- Forehead highlight (3D volume) -->
-        <ellipse cx="80" cy="65" rx="20" ry="14" fill="rgba(255,255,255,0.13)"/>
+        <!-- Left ear (visible) -->
+        <ellipse cx="51" cy="86" rx="9" ry="12" fill="url(#rg-skin)"/>
+        <ellipse cx="51" cy="86" rx="5" ry="7.5" fill="rgba(0,0,0,0.1)"/>
+        <!-- Right ear (small peek behind side face) -->
+        <ellipse cx="129" cy="86" rx="5" ry="9" fill="url(#rg-skin)"/>
 
         <!-- Eyebrows -->
-        <path d="M 65 75 Q 76 69 87 73" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M 93 73 Q 104 69 115 75" stroke="#4a2c0a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 63 67 Q 74 61 85 65" stroke="#3d2008" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 93 65 Q 104 61 115 67" stroke="#3d2008" stroke-width="3.5" fill="none" stroke-linecap="round"/>
 
-        <!-- Eyes — simplified to 4 elements each, no uncanny stacking -->
-        <ellipse cx="78" cy="88" rx="12" ry="11" fill="white"/>
-        <circle cx="78" cy="89" r="8" fill="#2563eb"/>
-        <circle cx="78" cy="89" r="5" fill="#1e3a8a"/>
-        <circle cx="82" cy="85" r="3.5" fill="white"/>
+        <!-- Eyes — 4 clean elements each, no uncanny valley stacking -->
+        <ellipse cx="75" cy="81" rx="11" ry="10" fill="white"/>
+        <circle cx="75" cy="82" r="7" fill="#2563eb"/>
+        <circle cx="75" cy="82" r="4.5" fill="#060b22"/>
+        <circle cx="79" cy="78" r="3" fill="white"/>
 
-        <ellipse cx="102" cy="88" rx="12" ry="11" fill="white"/>
-        <circle cx="102" cy="89" r="8" fill="#2563eb"/>
-        <circle cx="102" cy="89" r="5" fill="#1e3a8a"/>
-        <circle cx="106" cy="85" r="3.5" fill="white"/>
+        <ellipse cx="105" cy="81" rx="11" ry="10" fill="white"/>
+        <circle cx="105" cy="82" r="7" fill="#2563eb"/>
+        <circle cx="105" cy="82" r="4.5" fill="#060b22"/>
+        <circle cx="109" cy="78" r="3" fill="white"/>
 
-        <!-- Upper eyelid shadow -->
-        <path d="M 66 83 Q 78 77 90 82" stroke="rgba(60,30,10,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M 90 82 Q 102 77 114 83" stroke="rgba(60,30,10,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Eyelid arcs (subtle upper shadow) -->
+        <path d="M 64 76 Q 75 70 86 76" stroke="rgba(40,14,4,0.22)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 94 76 Q 105 70 116 76" stroke="rgba(40,14,4,0.22)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-        <!-- Nose — simple cute dot nose -->
-        <ellipse cx="86" cy="104" rx="4" ry="3" fill="rgba(180,90,70,0.32)"/>
-        <ellipse cx="94" cy="104" rx="4" ry="3" fill="rgba(180,90,70,0.32)"/>
-        <path d="M 86 100 Q 90 107 94 100" stroke="rgba(190,100,80,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Nose (subtle nostril dots) -->
+        <ellipse cx="84" cy="97" rx="4" ry="3" fill="rgba(155,70,50,0.3)"/>
+        <ellipse cx="96" cy="97" rx="4" ry="3" fill="rgba(155,70,50,0.3)"/>
+        <path d="M 84 93 Q 90 100 96 93" stroke="rgba(165,78,58,0.45)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
 
-        <!-- Mouth — gentle smile, stays inside head (head bottom ≈ y 138) -->
-        <path d="M 76 114 Q 90 125 104 114" stroke="#c0406a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M 80 117 Q 90 123 100 117" stroke="rgba(255,255,255,0.55)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <!-- Mouth — friendly smile well inside head (head ends y=124) -->
+        <path d="M 72 109 Q 90 120 108 109" stroke="#c0406a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M 77 112 Q 90 119 103 112" stroke="rgba(255,255,255,0.5)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
 
         <!-- Cheeks -->
-        <ellipse cx="59" cy="107" rx="13" ry="8" fill="rgba(255,110,110,0.22)"/>
-        <ellipse cx="121" cy="107" rx="13" ry="8" fill="rgba(255,110,110,0.22)"/>
+        <ellipse cx="63" cy="102" rx="12" ry="8" fill="rgba(255,110,100,0.2)"/>
+        <ellipse cx="117" cy="102" rx="12" ry="8" fill="rgba(255,110,100,0.2)"/>
 
         <!-- HAT LAYER -->
         <g id="hat-layer">
@@ -913,9 +917,14 @@
   </div>
 
   <div class="ed-tabs">
-    <button class="ed-tab active" data-tab="backgrounds" onclick="edSetTab('backgrounds')">🖼️ <span id="tab-bg-lbl">Backgrounds</span></button>
-    <button class="ed-tab" data-tab="clothes" onclick="edSetTab('clothes')">👕 <span id="tab-cl-lbl">Clothes</span></button>
-    <button class="ed-tab" data-tab="hats" onclick="edSetTab('hats')">🎩 <span id="tab-ht-lbl">Hats</span></button>
+    <button class="ed-tab active" data-tab="backgrounds" onclick="edSetTab('backgrounds')" title="Backgrounds">🖼️</button>
+    <button class="ed-tab" data-tab="hats"        onclick="edSetTab('hats')"        title="Hats">🎩</button>
+    <button class="ed-tab" data-tab="clothes"     onclick="edSetTab('clothes')"     title="Clothes">👕</button>
+    <button class="ed-tab" data-tab="pants"       onclick="edSetTab('pants')"       title="Pants">👖</button>
+    <button class="ed-tab" data-tab="shoes"       onclick="edSetTab('shoes')"       title="Shoes">👟</button>
+    <button class="ed-tab" data-tab="socks"       onclick="edSetTab('socks')"       title="Socks">🧦</button>
+    <button class="ed-tab" data-tab="skin"        onclick="edSetTab('skin')"        title="Skin Tone">🎨</button>
+    <button class="ed-tab" data-tab="hair"        onclick="edSetTab('hair')"        title="Hair Color">💇</button>
   </div>
   <div class="ed-items-wrap">
     <div id="ed-items-grid"></div>
@@ -1569,16 +1578,78 @@ var ED = {
     {id:'armor',     n:'Armor',     c0:'#cbd5e1',c1:'#475569', e:'⚔️', price:300},
     {id:'tuxedo',    n:'Tuxedo',    c0:'#1f2937',c1:'#030712', e:'🤵', price:200},
     {id:'astronaut', n:'Astronaut', c0:'#e2e8f0',c1:'#94a3b8', e:'🚀', price:300},
-  ]
+  ],
+  shoes: [
+    {id:'classic',  n:'Classic',  e:'⚫', price:0},
+    {id:'sneakers', n:'Sneakers', e:'👟', price:50},
+    {id:'sandals',  n:'Sandals',  e:'🩴', price:75},
+    {id:'boots',    n:'Boots',    e:'🥾', price:100},
+    {id:'heels',    n:'Heels',    e:'👠', price:100},
+    {id:'rainbow',  n:'Rainbow',  e:'🌈', price:150},
+    {id:'flippers', n:'Flippers', e:'🤿', price:150},
+    {id:'gold',     n:'Gold',     e:'✨', price:200},
+    {id:'space',    n:'Space',    e:'🚀', price:300},
+  ],
+  socks: [
+    {id:'none',    n:'None',    e:'—',  price:0},
+    {id:'white',   n:'White',   e:'⬜', price:0},
+    {id:'red',     n:'Red',     e:'🔴', price:50},
+    {id:'striped', n:'Striped', e:'〰️', price:50},
+    {id:'stars',   n:'Stars',   e:'⭐', price:75},
+    {id:'rainbow', n:'Rainbow', e:'🌈', price:100},
+    {id:'polka',   n:'Polka',   e:'🟣', price:100},
+    {id:'fire',    n:'Fire',    e:'🔥', price:150},
+  ],
+  pants: [
+    {id:'p1', n:'Blue',   c0:'#3b82f6',c1:'#1e3a8a', price:0},
+    {id:'p2', n:'Black',  c0:'#374151',c1:'#111827', price:0},
+    {id:'p3', n:'Grey',   c0:'#9ca3af',c1:'#4b5563', price:50},
+    {id:'p4', n:'Khaki',  c0:'#c8a870',c1:'#886840', price:50},
+    {id:'p5', n:'White',  c0:'#f0f0f0',c1:'#c0c0c0', price:75},
+    {id:'p6', n:'Red',    c0:'#dc2626',c1:'#7f1d1d', price:100},
+    {id:'p7', n:'Green',  c0:'#16a34a',c1:'#052e16', price:100},
+    {id:'p8', n:'Purple', c0:'#9333ea',c1:'#4c1d95', price:100},
+    {id:'p9', n:'Gold',   c0:'#d97706',c1:'#78350f', price:200},
+    {id:'p10',n:'Rainbow',c0:'#ef4444',c1:'#8b5cf6', price:400},
+  ],
+  skin: [
+    {id:'sk1', n:'Fair',    c0:'#fde8d8',c1:'#c87050', top:'#fef5ee',side:'#a86040', price:0},
+    {id:'sk2', n:'Warm',    c0:'#f5c8a0',c1:'#b87040', top:'#fde0c0',side:'#986030', price:0},
+    {id:'sk3', n:'Medium',  c0:'#d49870',c1:'#8a4818', top:'#e8b888',side:'#703818', price:0},
+    {id:'sk4', n:'Tan',     c0:'#b87848',c1:'#784028', top:'#d09060',side:'#603020', price:0},
+    {id:'sk5', n:'Brown',   c0:'#8c5030',c1:'#4c2010', top:'#a87050',side:'#3c1808', price:0},
+    {id:'sk6', n:'Deep',    c0:'#5a3020',c1:'#2c1008', top:'#7a4028',side:'#200c04', price:0},
+    {id:'sk7', n:'Blue',    c0:'#7ab0e0',c1:'#3070b0', top:'#9ac0f0',side:'#2060a0', price:150},
+    {id:'sk8', n:'Green',   c0:'#70c080',c1:'#308050', top:'#90d0a0',side:'#207040', price:150},
+    {id:'sk9', n:'Purple',  c0:'#c080e0',c1:'#8040b0', top:'#d090f0',side:'#6030a0', price:150},
+    {id:'sk10',n:'Gold',    c0:'#f0c840',c1:'#c09010', top:'#f8d860',side:'#a07808', price:300},
+  ],
+  hair: [
+    {id:'h1', n:'Brown',  c0:'#6b3a1a',c1:'#1a0804', price:0},
+    {id:'h2', n:'Black',  c0:'#1a1008',c1:'#050200', price:0},
+    {id:'h3', n:'Blonde', c0:'#f0d060',c1:'#c09020', price:0},
+    {id:'h4', n:'Auburn', c0:'#b04020',c1:'#601008', price:0},
+    {id:'h5', n:'Grey',   c0:'#c0b0a0',c1:'#706860', price:50},
+    {id:'h6', n:'Blue',   c0:'#4080e0',c1:'#1040a0', price:100},
+    {id:'h7', n:'Pink',   c0:'#f080c0',c1:'#c02080', price:100},
+    {id:'h8', n:'Purple', c0:'#c060e0',c1:'#6020a0', price:100},
+    {id:'h9', n:'White',  c0:'#f4f0f0',c1:'#c0b8b8', price:150},
+    {id:'h10',n:'Rainbow',c0:'#ff6060',c1:'#6060ff', price:400},
+  ],
 };
 
-var edState = {bg:'beach', hat:'none', clothes:'none', tab:'backgrounds'};
+var edState = {bg:'beach', hat:'none', clothes:'none', shoes:'classic', socks:'none', pants:'p1', skin:'sk1', hair:'h1', tab:'backgrounds'};
 var coins = parseInt(localStorage.getItem('historyCoins') || '0');
 var ownedItems = JSON.parse(localStorage.getItem('historyOwned') || '{}');
-var FREE_IDS = ['beach','space','none','tshirt'];
+var FREE_IDS = ['beach','space','none','tshirt','classic','sk1','sk2','sk3','sk4','sk5','sk6','h1','h2','h3','h4','p1','p2'];
 var coinsThisGame = 0;
 
-function isOwned(id) { return FREE_IDS.indexOf(id) >= 0 || ownedItems[id] === true; }
+function isOwned(id, cat) {
+  if (FREE_IDS.indexOf(id) >= 0) return true;
+  if (ownedItems[id] === true) return true;
+  if (cat && ownedItems[cat+':'+id] === true) return true;
+  return false;
+}
 
 function earnCoins(n) {
   coins += n; coinsThisGame += n;
@@ -1599,12 +1670,12 @@ function showToast(msg) {
 }
 
 function tryBuy(id, price, key) {
-  if (isOwned(id)) { edSelect(key, id); return; }
+  if (isOwned(id, key)) { edSelect(key, id); return; }
   if (coins < price) { showToast('🪙 Need ' + price + ' coins — keep playing!'); return; }
   if (!confirm('Buy for 🪙 ' + price + ' coins?')) return;
   coins -= price;
   localStorage.setItem('historyCoins', coins);
-  ownedItems[id] = true;
+  ownedItems[key+':'+id] = true;
   localStorage.setItem('historyOwned', JSON.stringify(ownedItems));
   updateCoinDisplay();
   edSelect(key, id);
@@ -1656,12 +1727,10 @@ function applyEditorState() {
   document.getElementById('ed-stage-bg').style.background = bg.bg;
   document.getElementById('ed-scatter').innerHTML = bg.sc.map(function(e){return '<span>'+e+'</span>';}).join('');
 
-  // Toggle hat SVG groups
   document.querySelectorAll('[data-hat]').forEach(function(g){ g.setAttribute('display','none'); });
   var hatEl = document.querySelector('[data-hat="'+edState.hat+'"]');
   if (hatEl) hatEl.removeAttribute('display');
 
-  // Toggle clothing SVG groups + update body gradient
   document.querySelectorAll('[data-clothes]').forEach(function(g){ g.setAttribute('display','none'); });
   var clEl = document.querySelector('[data-clothes="'+edState.clothes+'"]');
   if (clEl) clEl.removeAttribute('display');
@@ -1670,24 +1739,73 @@ function applyEditorState() {
   document.getElementById('blg1').setAttribute('stop-color', cl.c1);
   document.getElementById('alg0').setAttribute('stop-color', cl.c0);
   document.getElementById('alg1').setAttribute('stop-color', cl.c1);
+
+  document.querySelectorAll('[data-shoes]').forEach(function(g){ g.setAttribute('display','none'); });
+  var shEl = document.querySelector('[data-shoes="'+edState.shoes+'"]');
+  if (shEl) shEl.removeAttribute('display');
+
+  document.querySelectorAll('[data-socks]').forEach(function(g){ g.setAttribute('display','none'); });
+  var skEl = document.querySelector('[data-socks="'+edState.socks+'"]');
+  if (skEl) skEl.removeAttribute('display');
+
+  var tone = ED.skin.find(function(t){return t.id===edState.skin;}) || ED.skin[0];
+  ['rgs0','rgs1','rgs2'].forEach(function(id,i){
+    var el=document.getElementById(id); if(el) el.setAttribute('stop-color', i===0?tone.c0:tone.c1);
+  });
+  var hs=document.getElementById('head-side'), ht=document.getElementById('head-top');
+  if(hs) hs.setAttribute('fill', tone.side);
+  if(ht) ht.setAttribute('fill', tone.top);
+
+  var hc = ED.hair.find(function(h){return h.id===edState.hair;}) || ED.hair[0];
+  var h0=document.getElementById('rgh0'), h1=document.getElementById('rgh1');
+  if(h0) h0.setAttribute('stop-color', hc.c0);
+  if(h1) h1.setAttribute('stop-color', hc.c1);
+
+  var pnt = ED.pants.find(function(p){return p.id===edState.pants;}) || ED.pants[0];
+  var p0=document.getElementById('plg0'), p1=document.getElementById('plg1');
+  if(p0) p0.setAttribute('stop-color', pnt.c0);
+  if(p1) p1.setAttribute('stop-color', pnt.c1);
 }
 
 function renderEditorItems() {
   var tab = edState.tab;
-  var items = tab==='backgrounds' ? ED.backgrounds : tab==='hats' ? ED.hats : ED.clothes;
-  var key   = tab==='backgrounds' ? 'bg' : tab==='hats' ? 'hat' : 'clothes';
+  var tabMap = {
+    backgrounds:{items:ED.backgrounds, key:'bg'},
+    hats:       {items:ED.hats,        key:'hat'},
+    clothes:    {items:ED.clothes,     key:'clothes'},
+    shoes:      {items:ED.shoes,       key:'shoes'},
+    socks:      {items:ED.socks,       key:'socks'},
+    pants:      {items:ED.pants,       key:'pants'},
+    skin:       {items:ED.skin,        key:'skin'},
+    hair:       {items:ED.hair,        key:'hair'},
+  };
+  var cfg = tabMap[tab] || tabMap.backgrounds;
+  var items = cfg.items, key = cfg.key;
   document.getElementById('ed-items-grid').innerHTML = items.map(function(item){
-    var owned = isOwned(item.id);
+    var owned = isOwned(item.id, key);
     var sel = (edState[key]===item.id) ? ' selected' : '';
-    var lockedCls = (!owned) ? ' locked' : '';
+    var lockedCls = owned ? '' : ' locked';
+    var lockIcon = '🔒';
     var preview;
     if (tab === 'backgrounds') {
       var sc2 = item.sc ? item.sc.slice(0,2).join('') : '';
-      preview = '<div class="item-bg-prev" style="background:'+item.bg+'">'+(owned?sc2:'🔒')+'</div>';
+      preview = '<div class="item-bg-prev" style="background:'+item.bg+'">'+(owned?sc2:lockIcon)+'</div>';
     } else if (tab === 'clothes') {
-      preview = '<div style="width:42px;height:32px;border-radius:8px;background:linear-gradient(135deg,'+item.c0+','+item.c1+');display:flex;align-items:center;justify-content:center;font-size:'+(owned?'18':'14')+'px">'+(owned?item.e:'🔒')+'</div>';
+      preview = '<div style="width:42px;height:32px;border-radius:8px;background:linear-gradient(135deg,'+item.c0+','+item.c1+');display:flex;align-items:center;justify-content:center;font-size:'+(owned?'18':'14')+'px">'+(owned?item.e:lockIcon)+'</div>';
+    } else if (tab === 'skin') {
+      preview = owned
+        ? '<div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,'+item.c0+','+item.c1+')"></div>'
+        : '<div style="width:40px;height:40px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center">'+lockIcon+'</div>';
+    } else if (tab === 'hair') {
+      preview = owned
+        ? '<div style="width:42px;height:28px;border-radius:14px 14px 50% 50%;background:radial-gradient(ellipse at 50% 30%,'+item.c0+','+item.c1+')"></div>'
+        : '<div style="width:42px;height:28px;border-radius:10px;background:#333;display:flex;align-items:center;justify-content:center">'+lockIcon+'</div>';
+    } else if (tab === 'pants') {
+      preview = owned
+        ? '<div style="width:42px;height:32px;border-radius:8px;background:linear-gradient(135deg,'+item.c0+','+item.c1+')"></div>'
+        : '<div style="width:42px;height:32px;border-radius:8px;background:#333;display:flex;align-items:center;justify-content:center">'+lockIcon+'</div>';
     } else {
-      preview = '<div class="item-emoji">'+(owned?(item.e||'✨'):'🔒')+'</div>';
+      preview = '<div class="item-emoji">'+(owned?(item.e||'✨'):lockIcon)+'</div>';
     }
     var badge = owned
       ? (item.price===0 ? '<span class="item-owned-badge">FREE</span>' : '<span class="item-owned-badge">✓</span>')
